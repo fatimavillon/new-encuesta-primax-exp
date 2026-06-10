@@ -769,7 +769,7 @@
         document.querySelectorAll('#'+groupId+' .yn-btn').forEach(b => b.classList.remove('selected'));
         btn.classList.add('selected');
         answers[groupId] = val;
-        document.getElementById(condId).classList.toggle('visible', val==='si');
+        document.getElementById(condId).classList.toggle('visible', val==='no');
     }
 
     function selectCtRow(rowId, val) {
