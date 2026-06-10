@@ -769,7 +769,14 @@
         document.querySelectorAll('#'+groupId+' .yn-btn').forEach(b => b.classList.remove('selected'));
         btn.classList.add('selected');
         answers[groupId] = val;
-        document.getElementById(condId).classList.toggle('visible', val==='no');
+
+        if (groupId === 'yn-medios') {
+            // Para medios de pago, muestra el bloque solo si dice 'no'
+            document.getElementById(condId).classList.toggle('visible', val === 'no');
+        } else if (groupId === 'yn-promo') {
+            // Para promociones, muestra la pregunta P16 solo si dice 'si'
+            document.getElementById(condId).classList.toggle('visible', val === 'si');
+        }
     }
 
     function selectCtRow(rowId, val) {
