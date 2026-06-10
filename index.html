@@ -1,0 +1,822 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Encuesta de Experiencia – Primax</title>
+    <link href="https://fonts.googleapis.com/css2?family=Clash+Display:wght@400;500;600;700&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;1,9..40,300&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --orange:       #FF6200;
+            --orange-light: #FF8438;
+            --orange-dark:  #C94A00;
+            --orange-pale:  #FFF3EC;
+            --orange-mid:   #FFD8BE;
+            --bg:           #FAFAF9;
+            --surface:      #FFFFFF;
+            --surface2:     #F5F0EC;
+            --border:       #EAE3DC;
+            --border-strong:#D4C9BE;
+            --text:         #1A1209;
+            --text-mid:     #6B5C4E;
+            --text-soft:    #9E8D7E;
+            --shadow-sm:    0 1px 4px rgba(100,60,20,0.06), 0 4px 12px rgba(100,60,20,0.05);
+            --shadow-md:    0 4px 16px rgba(100,60,20,0.10), 0 1px 4px rgba(100,60,20,0.06);
+            --shadow-lg:    0 12px 40px rgba(255,98,0,0.18), 0 2px 8px rgba(255,98,0,0.10);
+            --radius:       18px;
+            --nav-h:        64px;
+            --progress-h:   4px;
+        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'DM Sans', sans-serif; background: var(--bg); color: var(--text); min-height: 100vh; overflow-x: hidden; }
+        body::before { content: ''; position: fixed; inset: 0; background-image: radial-gradient(circle, rgba(255,98,0,0.045) 1px, transparent 1px); background-size: 28px 28px; pointer-events: none; z-index: 0; }
+        #progress-bar-wrap { position: fixed; top: var(--nav-h); left: 0; right: 0; height: var(--progress-h); background: rgba(255,255,255,0.3); z-index: 100; }
+        #progress-fill { height: 100%; background: rgba(255,255,255,0.85); width: 0%; transition: width 0.55s cubic-bezier(.4,0,.2,1); border-radius: 0 3px 3px 0; }
+        nav { position: fixed; top: 0; left: 0; right: 0; height: var(--nav-h); background: var(--orange); display: flex; align-items: center; justify-content: space-between; padding: 0 32px; z-index: 99; box-shadow: 0 2px 16px rgba(255,98,0,0.35); }
+        .logo-slot { height: 36px; display: flex; align-items: center; gap: 12px; }
+        .primax-logo-img { height: 32px; width: auto; display: block; }
+        .step-pill { font-size: 11px; letter-spacing: 1.5px; text-transform: uppercase; color: rgba(255,255,255,0.85); font-weight: 500; padding: 6px 14px; background: rgba(255,255,255,0.15); border-radius: 20px; border: 1px solid rgba(255,255,255,0.3); white-space: nowrap; }
+        #survey-wrap { max-width: 660px; margin: 0 auto; padding: calc(var(--nav-h) + var(--progress-h) + 48px) 24px 80px; min-height: 100vh; display: flex; flex-direction: column; justify-content: center; position: relative; z-index: 1; }
+        .screen { display: none; }
+        .screen.active { display: flex; flex-direction: column; gap: 24px; animation: fadeUp 0.42s cubic-bezier(.4,0,.2,1) forwards; }
+        @keyframes fadeUp { from { opacity: 0; transform: translateY(22px); } to { opacity: 1; transform: translateY(0); } }
+        .q-label { font-size: 10.5px; letter-spacing: 2.5px; text-transform: uppercase; color: var(--orange); font-weight: 600; display: flex; align-items: center; gap: 8px; }
+        .q-label::before { content: ''; display: inline-block; width: 14px; height: 2.5px; background: var(--orange); border-radius: 2px; }
+        .q-title { font-family: 'Clash Display', sans-serif; font-size: clamp(22px, 4vw, 36px); font-weight: 700; line-height: 1.18; color: var(--text); letter-spacing: -0.6px; }
+        .q-title em { font-style: normal; color: var(--orange); }
+        .q-sub { font-size: 14px; color: var(--text-mid); line-height: 1.65; font-weight: 300; margin-top: -8px; }
+        .section-card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 20px 20px 16px; display: flex; flex-direction: column; gap: 18px; box-shadow: var(--shadow-sm); }
+        .section-title { font-family: 'Clash Display', sans-serif; font-size: 14px; font-weight: 700; color: var(--orange-dark); display: flex; align-items: center; gap: 10px; padding-bottom: 12px; border-bottom: 1px solid var(--border); }
+        .section-title .icon { width: 28px; height: 28px; background: var(--orange-pale); border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 14px; border: 1px solid var(--orange-mid); }
+        .sub-item { display: flex; flex-direction: column; gap: 8px; }
+        .sub-item-label { font-size: 13px; color: var(--text-mid); font-weight: 400; line-height: 1.5; }
+        /* Emoji scale */
+        .emoji-scale { display: flex; gap: 6px; }
+        .emoji-btn { flex: 1; padding: 10px 4px 9px; border: 1.5px solid var(--border); border-radius: 12px; background: var(--surface2); color: var(--text); font-family: 'Clash Display', sans-serif; cursor: pointer; transition: all 0.14s ease; display: flex; flex-direction: column; align-items: center; gap: 3px; }
+        .emoji-btn .eb-emoji { font-size: 16px; line-height: 1; }
+        .emoji-btn .eb-num   { font-size: 12px; font-weight: 700; }
+        .emoji-btn .eb-word  { font-size: 7.5px; letter-spacing: 0.5px; text-transform: uppercase; color: var(--text-soft); text-align: center; line-height: 1.2; }
+        .emoji-btn:hover { border-color: var(--orange); background: var(--orange-pale); }
+        .emoji-btn.selected { border-color: var(--orange); background: var(--orange); color: #fff; box-shadow: 0 4px 14px rgba(255,98,0,0.28); }
+        .emoji-btn.selected .eb-word { color: rgba(255,255,255,0.75); }
+        /* Big scale (NPS / 0-10) */
+        .nps-row { display: flex; gap: 5px; flex-wrap: wrap; }
+        .nps-btn { flex: 1; min-width: 36px; padding: 12px 4px; border: 1.5px solid var(--border); border-radius: 10px; background: var(--surface); color: var(--text); font-family: 'Clash Display', sans-serif; font-size: 14px; font-weight: 700; cursor: pointer; transition: all 0.14s; text-align: center; }
+        .nps-btn:hover { border-color: var(--orange); background: var(--orange-pale); }
+        .nps-btn.selected { border-color: var(--orange); background: var(--orange); color: #fff; box-shadow: var(--shadow-lg); }
+        .scale-label-row { display: flex; justify-content: space-between; font-size: 10px; color: var(--text-soft); letter-spacing: 0.5px; text-transform: uppercase; padding: 0 2px; }
+        /* 5-point word scale */
+        .word-scale { display: flex; gap: 7px; }
+        .word-btn { flex: 1; padding: 12px 5px; border: 1.5px solid var(--border); border-radius: 12px; background: var(--surface); cursor: pointer; transition: all 0.14s; display: flex; flex-direction: column; align-items: center; gap: 5px; box-shadow: var(--shadow-sm); }
+        .word-btn .wn { font-family: 'Clash Display', sans-serif; font-size: 17px; font-weight: 700; color: var(--text); }
+        .word-btn .wl { font-size: 8px; letter-spacing: 0.4px; text-transform: uppercase; color: var(--text-soft); text-align: center; line-height: 1.3; }
+        .word-btn:hover { border-color: var(--orange); background: var(--orange-pale); }
+        .word-btn.selected { border-color: var(--orange); background: var(--orange); }
+        .word-btn.selected .wn { color: #fff; }
+        .word-btn.selected .wl { color: rgba(255,255,255,0.65); }
+        /* Choices */
+        .choice-list { display: flex; flex-direction: column; gap: 10px; }
+        .choice-item { display: flex; align-items: flex-start; gap: 14px; padding: 14px 18px; border: 1.5px solid var(--border); border-radius: 14px; cursor: pointer; transition: all 0.17s ease; background: var(--surface); text-align: left; width: 100%; color: var(--text); font-family: 'DM Sans', sans-serif; font-size: 14px; font-weight: 400; box-shadow: var(--shadow-sm); }
+        .choice-item .choice-num { width: 28px; height: 28px; border-radius: 8px; border: 1.5px solid var(--border-strong); background: var(--surface2); display: flex; align-items: center; justify-content: center; font-family: 'Clash Display', sans-serif; font-size: 12px; font-weight: 700; color: var(--text-mid); flex-shrink: 0; transition: all 0.15s; margin-top: 1px; }
+        .choice-item:hover { border-color: var(--orange); background: var(--orange-pale); transform: translateX(4px); }
+        .choice-item.selected { border-color: var(--orange); background: var(--orange-pale); box-shadow: 0 0 0 3px rgba(255,98,0,0.10); }
+        .choice-item.selected .choice-num { background: var(--orange); border-color: var(--orange); color: #fff; }
+        /* Checkbox choices */
+        .checkbox-list { display: flex; flex-direction: column; gap: 8px; }
+        .checkbox-item { display: flex; align-items: flex-start; gap: 12px; padding: 12px 16px; border: 1.5px solid var(--border); border-radius: 12px; cursor: pointer; transition: all 0.14s; background: var(--surface); text-align: left; width: 100%; color: var(--text); font-family: 'DM Sans', sans-serif; font-size: 14px; font-weight: 400; }
+        .checkbox-item:hover { border-color: var(--orange); background: var(--orange-pale); }
+        .checkbox-item.selected { border-color: var(--orange); background: var(--orange-pale); }
+        .cb-box { width: 20px; height: 20px; border-radius: 6px; border: 2px solid var(--border-strong); background: var(--surface2); display: flex; align-items: center; justify-content: center; flex-shrink: 0; transition: all 0.14s; margin-top: 1px; }
+        .checkbox-item.selected .cb-box { background: var(--orange); border-color: var(--orange); }
+        .cb-check { font-size: 11px; color: #fff; display: none; }
+        .checkbox-item.selected .cb-check { display: block; }
+        /* Yes/No */
+        .yesno-row { display: flex; gap: 12px; }
+        .yn-btn { flex: 1; padding: 14px; border-radius: 14px; border: 1.5px solid var(--border); background: var(--surface); color: var(--text); font-family: 'Clash Display', sans-serif; font-size: 16px; font-weight: 700; cursor: pointer; transition: all 0.17s ease; display: flex; flex-direction: column; align-items: center; gap: 5px; box-shadow: var(--shadow-sm); }
+        .yn-btn .yn-emoji { font-size: 24px; }
+        .yn-btn:hover { border-color: var(--orange); background: var(--orange-pale); }
+        .yn-btn.selected { border-color: var(--orange); background: var(--orange); color: #fff; box-shadow: var(--shadow-lg); }
+        /* Sí/No table row */
+        .checklist-table { display: flex; flex-direction: column; gap: 0; border: 1px solid var(--border); border-radius: 14px; overflow: hidden; }
+        .ct-header { display: grid; grid-template-columns: 1fr 60px 60px; gap: 0; background: var(--surface2); padding: 10px 16px; border-bottom: 1px solid var(--border); }
+        .ct-header span { font-size: 10px; letter-spacing: 1px; text-transform: uppercase; color: var(--text-soft); font-weight: 600; text-align: center; }
+        .ct-header span:first-child { text-align: left; }
+        .ct-row { display: grid; grid-template-columns: 1fr 60px 60px; gap: 0; padding: 12px 16px; border-bottom: 1px solid var(--border); background: var(--surface); align-items: center; transition: background 0.12s; }
+        .ct-row:last-child { border-bottom: none; }
+        .ct-row:hover { background: var(--orange-pale); }
+        .ct-label { font-size: 13px; color: var(--text); line-height: 1.45; }
+        .ct-cell { display: flex; align-items: center; justify-content: center; }
+        .ct-radio { width: 20px; height: 20px; border-radius: 50%; border: 2px solid var(--border-strong); background: var(--surface2); cursor: pointer; transition: all 0.14s; display: flex; align-items: center; justify-content: center; }
+        .ct-radio.selected-si { background: var(--orange); border-color: var(--orange); }
+        .ct-radio.selected-no { background: #ef4444; border-color: #ef4444; }
+        .ct-radio::after { content: ''; width: 8px; height: 8px; border-radius: 50%; background: #fff; opacity: 0; transition: opacity 0.14s; }
+        .ct-radio.selected-si::after, .ct-radio.selected-no::after { opacity: 1; }
+        /* Textarea */
+        .open-field { width: 100%; padding: 14px 16px; border: 1.5px solid var(--border); border-radius: 14px; background: var(--surface); color: var(--text); font-family: 'DM Sans', sans-serif; font-size: 14px; font-weight: 300; resize: none; min-height: 100px; transition: border-color 0.17s, box-shadow 0.17s; outline: none; box-shadow: var(--shadow-sm); }
+        .open-field::placeholder { color: var(--text-soft); }
+        .open-field:focus { border-color: var(--orange); box-shadow: 0 0 0 4px rgba(255,98,0,0.08); }
+        .open-field-sm { min-height: 60px; }
+        /* Conditional block */
+        .cond-block { display: none; flex-direction: column; gap: 12px; padding: 16px 18px; border-left: 3px solid var(--orange); background: var(--orange-pale); border-radius: 0 14px 14px 0; animation: fadeUp 0.3s ease forwards; }
+        .cond-block.visible { display: flex; }
+        /* Buttons */
+        .cta-wrap { display: flex; gap: 12px; align-items: center; padding-top: 4px; }
+        .btn-next { padding: 14px 30px; background: var(--orange); color: #fff; border: none; border-radius: 12px; font-family: 'Clash Display', sans-serif; font-size: 14px; font-weight: 700; cursor: pointer; transition: all 0.17s ease; display: flex; align-items: center; gap: 8px; box-shadow: 0 4px 16px rgba(255,98,0,0.3); }
+        .btn-next:hover { background: var(--orange-dark); transform: translateY(-2px); box-shadow: 0 8px 24px rgba(255,98,0,0.38); }
+        .btn-back { padding: 14px 16px; background: transparent; color: var(--text-mid); border: 1.5px solid var(--border); border-radius: 12px; font-family: 'DM Sans', sans-serif; font-size: 13px; font-weight: 500; cursor: pointer; transition: all 0.14s; }
+        .btn-back:hover { color: var(--text); border-color: var(--border-strong); background: var(--surface2); }
+        /* Intro */
+        .intro-title { font-family: 'Clash Display', sans-serif; font-size: clamp(34px, 6.5vw, 54px); font-weight: 700; line-height: 1.0; letter-spacing: -1.5px; color: var(--text); }
+        .intro-title em { font-style: normal; color: var(--orange); }
+        .intro-desc { font-size: 15px; color: var(--text-mid); line-height: 1.7; font-weight: 300; max-width: 500px; }
+        .intro-divider { width: 44px; height: 3px; background: var(--orange); border-radius: 2px; margin: 2px 0; }
+        /* Data form */
+        .data-input { width: 100%; padding: 12px 16px; border: 1.5px solid var(--border); border-radius: 12px; background: var(--surface); color: var(--text); font-family: 'DM Sans', sans-serif; font-size: 14px; outline: none; transition: border-color 0.15s, box-shadow 0.15s; box-shadow: var(--shadow-sm); }
+        .data-input:focus { border-color: var(--orange); box-shadow: 0 0 0 4px rgba(255,98,0,0.08); }
+        .data-input::placeholder { color: var(--text-soft); }
+        .check-label { display: flex; align-items: flex-start; gap: 10px; cursor: pointer; font-size: 13px; color: var(--text-mid); line-height: 1.5; }
+        .check-label input { margin-top: 2px; accent-color: var(--orange); }
+        .check-label a { color: var(--orange); }
+        /* Thank you */
+        .ty-title { font-family: 'Clash Display', sans-serif; font-size: clamp(32px,5vw,48px); font-weight: 700; line-height: 1.1; letter-spacing: -1px; }
+        .ty-sub { font-size: 15px; color: var(--text-mid); line-height: 1.7; font-weight: 300; }
+        /* Filter label */
+        .filter-badge { display: inline-flex; align-items: center; gap: 6px; padding: 4px 10px; background: var(--orange-pale); border: 1px solid var(--orange-mid); border-radius: 20px; font-size: 10px; letter-spacing: 1px; text-transform: uppercase; color: var(--orange-dark); font-weight: 600; width: fit-content; }
+        @media (max-width: 500px) {
+            nav { padding: 0 14px; }
+            #survey-wrap { padding-left: 14px; padding-right: 14px; }
+            .emoji-scale { gap: 4px; }
+            .word-scale { gap: 4px; }
+            .nps-row { gap: 3px; }
+            .nps-btn { padding: 10px 2px; font-size: 13px; }
+        }
+    </style>
+</head>
+<body>
+
+<nav>
+    <div class="logo-slot">
+        <img src="https://primaxleed.com.pe/img/slider/logoprimax.png" alt="Logo Primax" class="primax-logo-img">
+    </div>
+    <div class="step-pill" id="step-label">Inicio</div>
+</nav>
+<div id="progress-bar-wrap"><div id="progress-fill"></div></div>
+
+<div id="survey-wrap">
+
+    <!-- S0: INTRO -->
+    <div class="screen active" id="s0">
+        <div class="intro-title">En <em>Primax</em>,<br>Tu experiencia<br><em>importa</em>.</div>
+        <div class="intro-divider"></div>
+        <div class="intro-desc">Queremos mejorar tu experiencia en nuestras estaciones. Esta encuesta toma aproximadamente 5 minutos. ¡Al finalizar participas por una Giftcard de S/250!</div>
+        <div class="cta-wrap">
+            <button class="btn-next" onclick="go(1)">Comenzar <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+        </div>
+    </div>
+
+    <!-- S1: SEGMENTACIÓN -->
+    <div class="screen" id="s1">
+        <div class="q-label">Sección 0 · Segmentación</div>
+        <div class="q-title">Cuéntanos sobre tu<br><em>visita de hoy</em></div>
+        <div class="section-card">
+            <div class="section-title"><span class="icon">⛽</span>Tu vehículo y hábitos</div>
+            <div class="sub-item">
+                <div class="sub-item-label">S1. ¿Qué tipo de combustible usa tu vehículo?</div>
+                <div class="choice-list" id="cl-combustible">
+                    <button class="choice-item" onclick="selectSingle('combustible',this,1,'cl-combustible')"><span class="choice-num">A</span>Gasolina Regular</button>
+                    <button class="choice-item" onclick="selectSingle('combustible',this,2,'cl-combustible')"><span class="choice-num">B</span>Gasolina Premium</button>
+                    <button class="choice-item" onclick="selectSingle('combustible',this,3,'cl-combustible')"><span class="choice-num">C</span>GLP (gas licuado)</button>
+                    <button class="choice-item" onclick="selectSingle('combustible',this,4,'cl-combustible')"><span class="choice-num">D</span>GNV (gas natural)</button>
+                </div>
+            </div>
+            <div class="sub-item">
+                <div class="sub-item-label">S2. ¿Con qué frecuencia visitas una estación Primax?</div>
+                <div class="choice-list" id="cl-frecuencia">
+                    <button class="choice-item" onclick="selectSingle('frecuencia',this,1,'cl-frecuencia')"><span class="choice-num">A</span>Más de una vez por semana</button>
+                    <button class="choice-item" onclick="selectSingle('frecuencia',this,2,'cl-frecuencia')"><span class="choice-num">B</span>Una vez por semana</button>
+                    <button class="choice-item" onclick="selectSingle('frecuencia',this,3,'cl-frecuencia')"><span class="choice-num">C</span>Cada dos semanas aproximadamente</button>
+                    <button class="choice-item" onclick="selectSingle('frecuencia',this,4,'cl-frecuencia')"><span class="choice-num">D</span>Una vez al mes o menos</button>
+                    <button class="choice-item" onclick="selectSingle('frecuencia',this,5,'cl-frecuencia')"><span class="choice-num">E</span>No tengo una frecuencia fija</button>
+                </div>
+            </div>
+            <div class="sub-item">
+                <div class="sub-item-label">S3. Cuando necesitas cargar combustible, tu elección de una estación es…</div>
+                <div class="choice-list" id="cl-eleccion">
+                    <button class="choice-item" onclick="selectSingle('eleccion',this,1,'cl-eleccion')"><span class="choice-num">A</span>Siempre o casi siempre vengo a la misma estación Primax</button>
+                    <button class="choice-item" onclick="selectSingle('eleccion',this,2,'cl-eleccion')"><span class="choice-num">B</span>Voy a distintas estaciones Primax según dónde esté</button>
+                    <button class="choice-item" onclick="selectSingle('eleccion',this,3,'cl-eleccion')"><span class="choice-num">C</span>También uso estaciones de otras marcas</button>
+                    <button class="choice-item" onclick="selectSingle('eleccion',this,4,'cl-eleccion')"><span class="choice-num">D</span>No tengo un patrón definido / Depende del momento</button>
+                </div>
+                <div class="cond-block" id="cond-otras-marcas">
+                    <div class="sub-item-label">¿Cuáles otras marcas usas?</div>
+                    <input type="text" class="data-input" id="txt-otras-marcas" placeholder="Ej: Repsol, Shell, Pecsa…">
+                </div>
+            </div>
+        </div>
+        <div class="cta-wrap">
+            <button class="btn-back" onclick="go(0)">← Atrás</button>
+            <button class="btn-next" onclick="goNext(1,2)">Siguiente <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+        </div>
+    </div>
+
+    <!-- S2: LLEGADA -->
+    <div class="screen" id="s2">
+        <div class="q-label">Sección 1 · Decisión y Llegada</div>
+        <div class="q-title"><em>¿Cómo llegaste</em> hoy a Primax?</div>
+        <div class="section-card">
+            <div class="section-title"><span class="icon">📍</span>Acceso a la estación</div>
+            <div class="sub-item">
+                <div class="sub-item-label">P1. ¿Con qué facilidad encontraste esta estación Primax (ubicación, señalización, acceso)?</div>
+                <div style="display:flex;flex-direction:column;gap:6px">
+                    <div class="word-scale" id="ws-facilidad">
+                        <button class="word-btn" onclick="selectWord('ws-facilidad',this,1)"><span class="wn">1</span><span class="wl">Muy<br>difícil</span></button>
+                        <button class="word-btn" onclick="selectWord('ws-facilidad',this,2)"><span class="wn">2</span><span class="wl">Difícil</span></button>
+                        <button class="word-btn" onclick="selectWord('ws-facilidad',this,3)"><span class="wn">3</span><span class="wl">Regular</span></button>
+                        <button class="word-btn" onclick="selectWord('ws-facilidad',this,4)"><span class="wn">4</span><span class="wl">Fácil</span></button>
+                        <button class="word-btn" onclick="selectWord('ws-facilidad',this,5)"><span class="wn">5</span><span class="wl">Muy<br>fácil</span></button>
+                    </div>
+                </div>
+            </div>
+            <div class="sub-item">
+                <div class="sub-item-label">P2. Al llegar, ¿encontraste rápidamente una isla disponible?</div>
+                <div class="choice-list" id="cl-isla">
+                    <button class="choice-item" onclick="selectSingle('isla',this,1,'cl-isla')"><span class="choice-num">A</span>Sí, de inmediato</button>
+                    <button class="choice-item" onclick="selectSingle('isla',this,2,'cl-isla')"><span class="choice-num">B</span>Esperé un tiempo razonable</button>
+                    <button class="choice-item" onclick="selectSingle('isla',this,3,'cl-isla')"><span class="choice-num">C</span>Tuve que esperar más de lo esperado</button>
+                    <button class="choice-item" onclick="selectSingle('isla',this,4,'cl-isla')"><span class="choice-num">D</span>No encontré isla disponible / me fui</button>
+                </div>
+            </div>
+        </div>
+        <div class="cta-wrap">
+            <button class="btn-back" onclick="go(1)">← Atrás</button>
+            <button class="btn-next" onclick="goNext(2,3)">Siguiente <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+        </div>
+    </div>
+
+    <!-- S3: ATENCIÓN EN ISLA -->
+    <div class="screen" id="s3">
+        <div class="q-label">Sección 2 · Atención en Isla</div>
+        <div class="q-title">El <em>playero</em> que te atendió</div>
+        <div class="section-card">
+            <div class="section-title"><span class="icon">🤝</span>P3. Durante el abastecimiento, ¿ocurrieron estos aspectos?</div>
+            <div class="checklist-table">
+                <div class="ct-header"><span>Aspecto</span><span>Sí</span><span>No</span></div>
+                <div class="ct-row" id="ctr-saludo"><div class="ct-label">El playero te saludó y dio la bienvenida de forma amable</div><div class="ct-cell"><div class="ct-radio" onclick="selectCtRow('ctr-saludo','si')" id="ctr-saludo-si"></div></div><div class="ct-cell"><div class="ct-radio" onclick="selectCtRow('ctr-saludo','no')" id="ctr-saludo-no"></div></div></div>
+                <div class="ct-row" id="ctr-confirmacion"><div class="ct-label">El playero confirmó el tipo de combustible y monto antes de abastecer</div><div class="ct-cell"><div class="ct-radio" onclick="selectCtRow('ctr-confirmacion','si')" id="ctr-confirmacion-si"></div></div><div class="ct-cell"><div class="ct-radio" onclick="selectCtRow('ctr-confirmacion','no')" id="ctr-confirmacion-no"></div></div></div>
+                <div class="ct-row" id="ctr-marcador"><div class="ct-label">El playero precisó que el marcador estaba en cero al iniciar</div><div class="ct-cell"><div class="ct-radio" onclick="selectCtRow('ctr-marcador','si')" id="ctr-marcador-si"></div></div><div class="ct-cell"><div class="ct-radio" onclick="selectCtRow('ctr-marcador','no')" id="ctr-marcador-no"></div></div></div>
+                <div class="ct-row" id="ctr-uniforme"><div class="ct-label">El playero presentó imagen adecuada (uniforme correcto e implementos de seguridad)</div><div class="ct-cell"><div class="ct-radio" onclick="selectCtRow('ctr-uniforme','si')" id="ctr-uniforme-si"></div></div><div class="ct-cell"><div class="ct-radio" onclick="selectCtRow('ctr-uniforme','no')" id="ctr-uniforme-no"></div></div></div>
+                <div class="ct-row" id="ctr-promocion-isla"><div class="ct-label">El playero te ofreció información sobre promociones, Bonus u otros beneficios</div><div class="ct-cell"><div class="ct-radio" onclick="selectCtRow('ctr-promocion-isla','si')" id="ctr-promocion-isla-si"></div></div><div class="ct-cell"><div class="ct-radio" onclick="selectCtRow('ctr-promocion-isla','no')" id="ctr-promocion-isla-no"></div></div></div>
+            </div>
+            <div class="sub-item" style="margin-top:4px">
+                <div class="sub-item-label">P4. Durante la carga, ¿cómo describirías la atención del playero?</div>
+                <div class="choice-list" id="cl-atencion-playero">
+                    <button class="choice-item" onclick="selectSingle('atencion_playero',this,1,'cl-atencion-playero')"><span class="choice-num">A</span>Se mantuvo presente y atento durante todo el proceso</button>
+                    <button class="choice-item" onclick="selectSingle('atencion_playero',this,2,'cl-atencion-playero')"><span class="choice-num">B</span>Se ausentó un momento pero regresó oportunamente para el cobro</button>
+                    <button class="choice-item" onclick="selectSingle('atencion_playero',this,3,'cl-atencion-playero')"><span class="choice-num">C</span>Se fue a atender otra isla y tardó en regresar</button>
+                    <button class="choice-item" onclick="selectSingle('atencion_playero',this,4,'cl-atencion-playero')"><span class="choice-num">D</span>Tuve que llamarle o esperarle para que viniera a cobrarme</button>
+                </div>
+            </div>
+        </div>
+        <!-- GNV/GLP filter -->
+        <div id="gnv-block" style="display:none">
+            <div class="filter-badge">🔧 Solo aplica para clientes GNV / GLP</div>
+            <div class="section-card" style="margin-top:10px">
+                <div class="section-title"><span class="icon">⚙️</span>P5. Proceso de abastecimiento de gas</div>
+                <div class="sub-item">
+                    <div class="sub-item-label">Comodidad del proceso físico (bajar del vehículo, apertura del capó)</div>
+                    <div class="emoji-scale" id="es-gas-comodidad">
+                        <button class="emoji-btn" onclick="selectEmoji('es-gas-comodidad',this,1)"><span class="eb-emoji">😤</span><span class="eb-num">1</span><span class="eb-word">Muy<br>malo</span></button>
+                        <button class="emoji-btn" onclick="selectEmoji('es-gas-comodidad',this,2)"><span class="eb-emoji">😕</span><span class="eb-num">2</span><span class="eb-word">Malo</span></button>
+                        <button class="emoji-btn" onclick="selectEmoji('es-gas-comodidad',this,3)"><span class="eb-emoji">😐</span><span class="eb-num">3</span><span class="eb-word">Regular</span></button>
+                        <button class="emoji-btn" onclick="selectEmoji('es-gas-comodidad',this,4)"><span class="eb-emoji">😊</span><span class="eb-num">4</span><span class="eb-word">Bueno</span></button>
+                        <button class="emoji-btn" onclick="selectEmoji('es-gas-comodidad',this,5)"><span class="eb-emoji">🤩</span><span class="eb-num">5</span><span class="eb-word">Excl.</span></button>
+                    </div>
+                </div>
+                <div class="sub-item">
+                    <div class="sub-item-label">Rapidez del abastecimiento (escaneo del chip y llenado del tanque)</div>
+                    <div class="emoji-scale" id="es-gas-rapidez">
+                        <button class="emoji-btn" onclick="selectEmoji('es-gas-rapidez',this,1)"><span class="eb-emoji">😤</span><span class="eb-num">1</span><span class="eb-word">Muy<br>malo</span></button>
+                        <button class="emoji-btn" onclick="selectEmoji('es-gas-rapidez',this,2)"><span class="eb-emoji">😕</span><span class="eb-num">2</span><span class="eb-word">Malo</span></button>
+                        <button class="emoji-btn" onclick="selectEmoji('es-gas-rapidez',this,3)"><span class="eb-emoji">😐</span><span class="eb-num">3</span><span class="eb-word">Regular</span></button>
+                        <button class="emoji-btn" onclick="selectEmoji('es-gas-rapidez',this,4)"><span class="eb-emoji">😊</span><span class="eb-num">4</span><span class="eb-word">Bueno</span></button>
+                        <button class="emoji-btn" onclick="selectEmoji('es-gas-rapidez',this,5)"><span class="eb-emoji">🤩</span><span class="eb-num">5</span><span class="eb-word">Excl.</span></button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="cta-wrap">
+            <button class="btn-back" onclick="go(2)">← Atrás</button>
+            <button class="btn-next" onclick="goNext(3,4)">Siguiente <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+        </div>
+    </div>
+
+    <!-- S4: PAGO Y DESPEDIDA -->
+    <div class="screen" id="s4">
+        <div class="q-label">Sección 3 · Pago y Despedida</div>
+        <div class="q-title">¿Cómo fue el <em>proceso de pago</em>?</div>
+        <div class="section-card">
+            <div class="section-title"><span class="icon">💳</span>Pago y Salida</div>
+            <div class="sub-item">
+                <div class="sub-item-label">P6. El proceso de pago fue rápido y sin inconvenientes.</div>
+                <div style="display:flex;flex-direction:column;gap:6px">
+                    <div class="scale-label-row"><span>Totalmente en desacuerdo</span><span>Totalmente de acuerdo</span></div>
+                    <div class="word-scale" id="ws-pago">
+                        <button class="word-btn" onclick="selectWord('ws-pago',this,1)"><span class="wn">1</span><span class="wl">Total<br>desac.</span></button>
+                        <button class="word-btn" onclick="selectWord('ws-pago',this,2)"><span class="wn">2</span><span class="wl">En<br>desac.</span></button>
+                        <button class="word-btn" onclick="selectWord('ws-pago',this,3)"><span class="wn">3</span><span class="wl">Neutral</span></button>
+                        <button class="word-btn" onclick="selectWord('ws-pago',this,4)"><span class="wn">4</span><span class="wl">De<br>acuerdo</span></button>
+                        <button class="word-btn" onclick="selectWord('ws-pago',this,5)"><span class="wn">5</span><span class="wl">Total<br>acuerdo</span></button>
+                    </div>
+                </div>
+            </div>
+            <div class="sub-item">
+                <div class="sub-item-label">P7. Durante el pago y la despedida, ¿ocurrieron estos aspectos?</div>
+                <div class="checklist-table">
+                    <div class="ct-header"><span>Aspecto</span><span>Sí</span><span>No</span></div>
+                    <div class="ct-row" id="ctr-disponible-cobro"><div class="ct-label">El playero estaba disponible para iniciar el cobro (sin espera)</div><div class="ct-cell"><div class="ct-radio" onclick="selectCtRow('ctr-disponible-cobro','si')" id="ctr-disponible-cobro-si"></div></div><div class="ct-cell"><div class="ct-radio" onclick="selectCtRow('ctr-disponible-cobro','no')" id="ctr-disponible-cobro-no"></div></div></div>
+                    <div class="ct-row" id="ctr-boleta"><div class="ct-label">El playero te consultó si necesitabas boleta o factura</div><div class="ct-cell"><div class="ct-radio" onclick="selectCtRow('ctr-boleta','si')" id="ctr-boleta-si"></div></div><div class="ct-cell"><div class="ct-radio" onclick="selectCtRow('ctr-boleta','no')" id="ctr-boleta-no"></div></div></div>
+                    <div class="ct-row" id="ctr-bonus-pago"><div class="ct-label">El playero te ofreció sumar puntos o beneficios Bonus al pagar</div><div class="ct-cell"><div class="ct-radio" onclick="selectCtRow('ctr-bonus-pago','si')" id="ctr-bonus-pago-si"></div></div><div class="ct-cell"><div class="ct-radio" onclick="selectCtRow('ctr-bonus-pago','no')" id="ctr-bonus-pago-no"></div></div></div>
+                    <div class="ct-row" id="ctr-despedida-p"><div class="ct-label">El playero se despidió de forma cordial al finalizar</div><div class="ct-cell"><div class="ct-radio" onclick="selectCtRow('ctr-despedida-p','si')" id="ctr-despedida-p-si"></div></div><div class="ct-cell"><div class="ct-radio" onclick="selectCtRow('ctr-despedida-p','no')" id="ctr-despedida-p-no"></div></div></div>
+                </div>
+            </div>
+            <div class="sub-item">
+                <div class="sub-item-label">P8. ¿Los medios de pago disponibles (efectivo, tarjeta, Yape/Plin) cubrieron tu necesidad?</div>
+                <div class="yesno-row" id="yn-medios">
+                    <button class="yn-btn" onclick="selectYN('yn-medios',this,'si','cond-medios')"><span class="yn-emoji">✅</span>Sí</button>
+                    <button class="yn-btn" onclick="selectYN('yn-medios',this,'no','cond-medios')"><span class="yn-emoji">❌</span>No</button>
+                </div>
+                <div class="cond-block" id="cond-medios">
+                    <div class="sub-item-label">¿Cuál medio de pago hubieras necesitado?</div>
+                    <input type="text" class="data-input" id="txt-medio-pago" placeholder="Ej: Plin, tarjeta de débito…">
+                </div>
+            </div>
+        </div>
+        <div class="cta-wrap">
+            <button class="btn-back" onclick="go(3)">← Atrás</button>
+            <button class="btn-next" onclick="goNext(4,5)">Siguiente <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+        </div>
+    </div>
+
+    <!-- S5: SERVICIOS COMPLEMENTARIOS -->
+    <div class="screen" id="s5">
+        <div class="q-label">Sección 4 · Servicios Complementarios</div>
+        <div class="q-title">¿Usaste algún <em>servicio adicional</em>?</div>
+        <div class="section-card">
+            <div class="section-title"><span class="icon">🔧</span>P9. ¿Qué usaste durante tu visita? [Marca todos los que apliquen]</div>
+            <div class="checkbox-list" id="chk-servicios">
+                <button class="checkbox-item" onclick="toggleCheck(this,'serv_bano')"><span class="cb-box"><span class="cb-check">✓</span></span>Baño</button>
+                <button class="checkbox-item" onclick="toggleCheck(this,'serv_aire')"><span class="cb-box"><span class="cb-check">✓</span></span>Aire / agua para llantas</button>
+                <button class="checkbox-item" onclick="toggleCheck(this,'serv_lavado')"><span class="cb-box"><span class="cb-check">✓</span></span>Lavado de auto</button>
+                <button class="checkbox-item" onclick="toggleCheck(this,'serv_listo')"><span class="cb-box"><span class="cb-check">✓</span></span>Tienda Listo</button>
+                <button class="checkbox-item" onclick="toggleNinguno(this,'chk-servicios','serv_ninguno')"><span class="cb-box"><span class="cb-check">✓</span></span>Ninguno</button>
+            </div>
+        </div>
+
+        <!-- Baño filtro -->
+        <div id="block-bano" style="display:none">
+            <div class="filter-badge">🚻 Solo si usaste el baño</div>
+            <div class="section-card" style="margin-top:10px">
+                <div class="section-title"><span class="icon">🚻</span>P10. Califica los aspectos del baño</div>
+                <div class="sub-item">
+                    <div class="sub-item-label">Limpieza y orden general</div>
+                    <div class="emoji-scale" id="es-bano-limpieza"><button class="emoji-btn" onclick="selectEmoji('es-bano-limpieza',this,1)"><span class="eb-emoji">😤</span><span class="eb-num">1</span><span class="eb-word">Muy<br>malo</span></button><button class="emoji-btn" onclick="selectEmoji('es-bano-limpieza',this,2)"><span class="eb-emoji">😕</span><span class="eb-num">2</span><span class="eb-word">Malo</span></button><button class="emoji-btn" onclick="selectEmoji('es-bano-limpieza',this,3)"><span class="eb-emoji">😐</span><span class="eb-num">3</span><span class="eb-word">Regular</span></button><button class="emoji-btn" onclick="selectEmoji('es-bano-limpieza',this,4)"><span class="eb-emoji">😊</span><span class="eb-num">4</span><span class="eb-word">Bueno</span></button><button class="emoji-btn" onclick="selectEmoji('es-bano-limpieza',this,5)"><span class="eb-emoji">🤩</span><span class="eb-num">5</span><span class="eb-word">Excl.</span></button></div>
+                </div>
+                <div class="sub-item">
+                    <div class="sub-item-label">Olor dentro del baño</div>
+                    <div class="emoji-scale" id="es-bano-olor"><button class="emoji-btn" onclick="selectEmoji('es-bano-olor',this,1)"><span class="eb-emoji">😤</span><span class="eb-num">1</span><span class="eb-word">Muy<br>malo</span></button><button class="emoji-btn" onclick="selectEmoji('es-bano-olor',this,2)"><span class="eb-emoji">😕</span><span class="eb-num">2</span><span class="eb-word">Malo</span></button><button class="emoji-btn" onclick="selectEmoji('es-bano-olor',this,3)"><span class="eb-emoji">😐</span><span class="eb-num">3</span><span class="eb-word">Regular</span></button><button class="emoji-btn" onclick="selectEmoji('es-bano-olor',this,4)"><span class="eb-emoji">😊</span><span class="eb-num">4</span><span class="eb-word">Bueno</span></button><button class="emoji-btn" onclick="selectEmoji('es-bano-olor',this,5)"><span class="eb-emoji">🤩</span><span class="eb-num">5</span><span class="eb-word">Excl.</span></button></div>
+                </div>
+                <div class="sub-item">
+                    <div class="sub-item-label">Estado de instalaciones (grifos, puertas, inodoros)</div>
+                    <div class="emoji-scale" id="es-bano-estado"><button class="emoji-btn" onclick="selectEmoji('es-bano-estado',this,1)"><span class="eb-emoji">😤</span><span class="eb-num">1</span><span class="eb-word">Muy<br>malo</span></button><button class="emoji-btn" onclick="selectEmoji('es-bano-estado',this,2)"><span class="eb-emoji">😕</span><span class="eb-num">2</span><span class="eb-word">Malo</span></button><button class="emoji-btn" onclick="selectEmoji('es-bano-estado',this,3)"><span class="eb-emoji">😐</span><span class="eb-num">3</span><span class="eb-word">Regular</span></button><button class="emoji-btn" onclick="selectEmoji('es-bano-estado',this,4)"><span class="eb-emoji">😊</span><span class="eb-num">4</span><span class="eb-word">Bueno</span></button><button class="emoji-btn" onclick="selectEmoji('es-bano-estado',this,5)"><span class="eb-emoji">🤩</span><span class="eb-num">5</span><span class="eb-word">Excl.</span></button></div>
+                </div>
+                <div class="sub-item">
+                    <div class="sub-item-label">Iluminación y ventilación</div>
+                    <div class="emoji-scale" id="es-bano-ilum"><button class="emoji-btn" onclick="selectEmoji('es-bano-ilum',this,1)"><span class="eb-emoji">😤</span><span class="eb-num">1</span><span class="eb-word">Muy<br>malo</span></button><button class="emoji-btn" onclick="selectEmoji('es-bano-ilum',this,2)"><span class="eb-emoji">😕</span><span class="eb-num">2</span><span class="eb-word">Malo</span></button><button class="emoji-btn" onclick="selectEmoji('es-bano-ilum',this,3)"><span class="eb-emoji">😐</span><span class="eb-num">3</span><span class="eb-word">Regular</span></button><button class="emoji-btn" onclick="selectEmoji('es-bano-ilum',this,4)"><span class="eb-emoji">😊</span><span class="eb-num">4</span><span class="eb-word">Bueno</span></button><button class="emoji-btn" onclick="selectEmoji('es-bano-ilum',this,5)"><span class="eb-emoji">🤩</span><span class="eb-num">5</span><span class="eb-word">Excl.</span></button></div>
+                </div>
+                <div class="sub-item">
+                    <div class="sub-item-label">P11. ¿Quieres dejarnos algún comentario sobre el baño? (opcional)</div>
+                    <textarea class="open-field open-field-sm" id="txt-bano" placeholder="Comentarios sobre el baño…"></textarea>
+                </div>
+            </div>
+        </div>
+
+        <!-- Servicios generales filtro -->
+        <div id="block-servicios-gral" style="display:none">
+            <div class="filter-badge">⭐ Solo si usaste al menos un servicio</div>
+            <div class="section-card" style="margin-top:10px">
+                <div class="section-title"><span class="icon">📊</span>P12. En general, ¿cómo calificarías los servicios complementarios?</div>
+                <div class="sub-item">
+                    <div class="sub-item-label">Disponibilidad (estaban operativos cuando los necesitabas)</div>
+                    <div class="emoji-scale" id="es-serv-disp"><button class="emoji-btn" onclick="selectEmoji('es-serv-disp',this,1)"><span class="eb-emoji">😤</span><span class="eb-num">1</span><span class="eb-word">Muy<br>malo</span></button><button class="emoji-btn" onclick="selectEmoji('es-serv-disp',this,2)"><span class="eb-emoji">😕</span><span class="eb-num">2</span><span class="eb-word">Malo</span></button><button class="emoji-btn" onclick="selectEmoji('es-serv-disp',this,3)"><span class="eb-emoji">😐</span><span class="eb-num">3</span><span class="eb-word">Regular</span></button><button class="emoji-btn" onclick="selectEmoji('es-serv-disp',this,4)"><span class="eb-emoji">😊</span><span class="eb-num">4</span><span class="eb-word">Bueno</span></button><button class="emoji-btn" onclick="selectEmoji('es-serv-disp',this,5)"><span class="eb-emoji">🤩</span><span class="eb-num">5</span><span class="eb-word">Excl.</span></button></div>
+                </div>
+                <div class="sub-item">
+                    <div class="sub-item-label">Calidad general de los servicios utilizados</div>
+                    <div class="emoji-scale" id="es-serv-calidad"><button class="emoji-btn" onclick="selectEmoji('es-serv-calidad',this,1)"><span class="eb-emoji">😤</span><span class="eb-num">1</span><span class="eb-word">Muy<br>malo</span></button><button class="emoji-btn" onclick="selectEmoji('es-serv-calidad',this,2)"><span class="eb-emoji">😕</span><span class="eb-num">2</span><span class="eb-word">Malo</span></button><button class="emoji-btn" onclick="selectEmoji('es-serv-calidad',this,3)"><span class="eb-emoji">😐</span><span class="eb-num">3</span><span class="eb-word">Regular</span></button><button class="emoji-btn" onclick="selectEmoji('es-serv-calidad',this,4)"><span class="eb-emoji">😊</span><span class="eb-num">4</span><span class="eb-word">Bueno</span></button><button class="emoji-btn" onclick="selectEmoji('es-serv-calidad',this,5)"><span class="eb-emoji">🤩</span><span class="eb-num">5</span><span class="eb-word">Excl.</span></button></div>
+                </div>
+            </div>
+        </div>
+        <div class="cta-wrap">
+            <button class="btn-back" onclick="go(4)">← Atrás</button>
+            <button class="btn-next" onclick="goNext(5,6)">Siguiente <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+        </div>
+    </div>
+
+    <!-- S6: BONUS Y LEALTAD -->
+    <div class="screen" id="s6">
+        <div class="q-label">Sección 5 · Post-visita y Lealtad</div>
+        <div class="q-title">El programa <em>Bonus</em></div>
+        <div class="section-card">
+            <div class="section-title"><span class="icon">🎁</span>Programa de beneficios</div>
+            <div class="sub-item">
+                <div class="sub-item-label">P13. ¿Conoces el programa de beneficios Bonus de Primax?</div>
+                <div class="choice-list" id="cl-bonus">
+                    <button class="choice-item" onclick="selectSingle('bonus',this,1,'cl-bonus');showBonus(1)"><span class="choice-num">A</span>Sí, soy miembro activo</button>
+                    <button class="choice-item" onclick="selectSingle('bonus',this,2,'cl-bonus');showBonus(2)"><span class="choice-num">B</span>Sí, pero no lo uso activamente</button>
+                    <button class="choice-item" onclick="selectSingle('bonus',this,3,'cl-bonus');showBonus(3)"><span class="choice-num">C</span>No lo conozco</button>
+                </div>
+            </div>
+            <div class="cond-block" id="cond-bonus">
+                <div class="sub-item-label">P14. Siento que el programa Bonus me recompensa por mi lealtad a Primax.</div>
+                <div style="display:flex;flex-direction:column;gap:6px">
+                    <div class="scale-label-row"><span>Totalmente en desacuerdo</span><span>Totalmente de acuerdo</span></div>
+                    <div class="word-scale" id="ws-bonus">
+                        <button class="word-btn" onclick="selectWord('ws-bonus',this,1)"><span class="wn">1</span><span class="wl">Total<br>desac.</span></button>
+                        <button class="word-btn" onclick="selectWord('ws-bonus',this,2)"><span class="wn">2</span><span class="wl">En<br>desac.</span></button>
+                        <button class="word-btn" onclick="selectWord('ws-bonus',this,3)"><span class="wn">3</span><span class="wl">Neutral</span></button>
+                        <button class="word-btn" onclick="selectWord('ws-bonus',this,4)"><span class="wn">4</span><span class="wl">De<br>acuerdo</span></button>
+                        <button class="word-btn" onclick="selectWord('ws-bonus',this,5)"><span class="wn">5</span><span class="wl">Total<br>acuerdo</span></button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="cta-wrap">
+            <button class="btn-back" onclick="go(5)">← Atrás</button>
+            <button class="btn-next" onclick="goNext(6,7)">Siguiente <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+        </div>
+    </div>
+
+    <!-- S7: PROMOCIONES -->
+    <div class="screen" id="s7">
+        <div class="q-label">Sección 6 · Promociones y Valor</div>
+        <div class="q-title">Promociones y lo que <em>más valoras</em></div>
+        <div class="section-card">
+            <div class="section-title"><span class="icon">🏷️</span>Promociones en isla</div>
+            <div class="sub-item">
+                <div class="sub-item-label">P15. ¿Notaste o te ofrecieron alguna promoción durante la carga de combustible?</div>
+                <div class="yesno-row" id="yn-promo">
+                    <button class="yn-btn" onclick="selectYN('yn-promo',this,'si','cond-promo')"><span class="yn-emoji">✅</span>Sí</button>
+                    <button class="yn-btn" onclick="selectYN('yn-promo',this,'no','cond-promo')"><span class="yn-emoji">❌</span>No</button>
+                </div>
+                <div class="cond-block" id="cond-promo">
+                    <div class="sub-item-label">P16. ¿Qué tan atractiva te pareció la promoción ofrecida?</div>
+                    <div class="word-scale" id="ws-promo">
+                        <button class="word-btn" onclick="selectWord('ws-promo',this,1)"><span class="wn">1</span><span class="wl">Nada<br>atract.</span></button>
+                        <button class="word-btn" onclick="selectWord('ws-promo',this,2)"><span class="wn">2</span><span class="wl">Poco<br>atract.</span></button>
+                        <button class="word-btn" onclick="selectWord('ws-promo',this,3)"><span class="wn">3</span><span class="wl">Regular</span></button>
+                        <button class="word-btn" onclick="selectWord('ws-promo',this,4)"><span class="wn">4</span><span class="wl">Atractiva</span></button>
+                        <button class="word-btn" onclick="selectWord('ws-promo',this,5)"><span class="wn">5</span><span class="wl">Muy<br>atract.</span></button>
+                    </div>
+                </div>
+            </div>
+            <div class="sub-item">
+                <div class="sub-item-label">P17. ¿Qué tipo de promoción valorarías más al cargar? [Elige hasta 3]</div>
+                <div class="checkbox-list" id="chk-tipo-promo">
+                    <button class="checkbox-item" onclick="toggleCheckMax(this,'serv_agua',3,'chk-tipo-promo')"><span class="cb-box"><span class="cb-check">✓</span></span>Agua embotellada</button>
+                    <button class="checkbox-item" onclick="toggleCheckMax(this,'serv_energizante',3,'chk-tipo-promo')"><span class="cb-box"><span class="cb-check">✓</span></span>Bebida energizante (Volt, Monster, Red Bull)</button>
+                    <button class="checkbox-item" onclick="toggleCheckMax(this,'serv_snack',3,'chk-tipo-promo')"><span class="cb-box"><span class="cb-check">✓</span></span>Snack salado (papas, galletas)</button>
+                    <button class="checkbox-item" onclick="toggleCheckMax(this,'serv_combo',3,'chk-tipo-promo')"><span class="cb-box"><span class="cb-check">✓</span></span>Combo bebida + snack</button>
+                    <button class="checkbox-item" onclick="toggleCheckMax(this,'serv_puntos',3,'chk-tipo-promo')"><span class="cb-box"><span class="cb-check">✓</span></span>Puntos Bonus adicionales por la carga</button>
+                    <button class="checkbox-item" onclick="toggleCheckMax(this,'serv_listo_prod',3,'chk-tipo-promo')"><span class="cb-box"><span class="cb-check">✓</span></span>Producto de Tienda Listo a elección</button>
+                </div>
+            </div>
+        </div>
+        <div class="section-card">
+            <div class="section-title"><span class="icon">⭐</span>Lo que más valoras</div>
+            <div class="sub-item">
+                <div class="sub-item-label">P18. De los siguientes aspectos, ¿cuáles son los <strong>5 que más valoras</strong> al elegir dónde cargar? [Elige exactamente 5]</div>
+                <div class="checkbox-list" id="chk-atributos">
+                    <button class="checkbox-item" onclick="toggleCheckMax(this,'atr_isla',5,'chk-atributos')"><span class="cb-box"><span class="cb-check">✓</span></span>Disponibilidad inmediata de isla, sin tiempo de espera</button>
+                    <button class="checkbox-item" onclick="toggleCheckMax(this,'atr_seguridad',5,'chk-atributos')"><span class="cb-box"><span class="cb-check">✓</span></span>Seguridad al ingresar y salir de la estación</button>
+                    <button class="checkbox-item" onclick="toggleCheckMax(this,'atr_trato',5,'chk-atributos')"><span class="cb-box"><span class="cb-check">✓</span></span>Amabilidad y trato del playero</button>
+                    <button class="checkbox-item" onclick="toggleCheckMax(this,'atr_rapidez',5,'chk-atributos')"><span class="cb-box"><span class="cb-check">✓</span></span>Rapidez en el servicio de carga</button>
+                    <button class="checkbox-item" onclick="toggleCheckMax(this,'atr_confianza',5,'chk-atributos')"><span class="cb-box"><span class="cb-check">✓</span></span>Confianza y seguridad durante el abastecimiento</button>
+                    <button class="checkbox-item" onclick="toggleCheckMax(this,'atr_express',5,'chk-atributos')"><span class="cb-box"><span class="cb-check">✓</span></span>Servicios exprés mientras esperas (limpieza de parabrisa, revisión de líquidos)</button>
+                    <button class="checkbox-item" onclick="toggleCheckMax(this,'atr_complem',5,'chk-atributos')"><span class="cb-box"><span class="cb-check">✓</span></span>Calidad de servicios complementarios (baño, aire para llantas, lavado)</button>
+                    <button class="checkbox-item" onclick="toggleCheckMax(this,'atr_promos',5,'chk-atributos')"><span class="cb-box"><span class="cb-check">✓</span></span>Promociones y beneficios atractivos (combos, Bonus, descuentos)</button>
+                    <button class="checkbox-item" onclick="toggleCheckMax(this,'atr_calidad_comb',5,'chk-atributos')"><span class="cb-box"><span class="cb-check">✓</span></span>Calidad y confianza en el combustible</button>
+                    <button class="checkbox-item" onclick="toggleCheckMax(this,'atr_precio',5,'chk-atributos')"><span class="cb-box"><span class="cb-check">✓</span></span>Precio competitivo del combustible</button>
+                </div>
+            </div>
+            <div class="sub-item">
+                <div class="sub-item-label">P19. De los que elegiste, ¿cuál es el MÁS importante para ti?</div>
+                <textarea class="open-field open-field-sm" id="txt-mas-importante" placeholder="Escribe el aspecto más importante…"></textarea>
+            </div>
+        </div>
+        <div class="cta-wrap">
+            <button class="btn-back" onclick="go(6)">← Atrás</button>
+            <button class="btn-next" onclick="goNext(7,8)">Siguiente <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+        </div>
+    </div>
+
+    <!-- S8: INDICADORES NPS/CSAT/CES -->
+    <div class="screen" id="s8">
+        <div class="q-label">Sección 7 · Indicadores de Experiencia</div>
+        <div class="q-title">NPS · CSAT · <em>CES</em></div>
+        <div class="section-card">
+            <div class="section-title"><span class="icon">📊</span>NPS — ¿Nos recomendarías?</div>
+            <div class="sub-item">
+                <div class="sub-item-label">P20. Considerando tu experiencia completa, ¿con qué probabilidad recomendarías una estación Primax a un familiar o amigo?</div>
+                <div class="nps-row" id="nps-main">
+                    <button class="nps-btn" onclick="selectNPS('nps-main',this,0)">0</button>
+                    <button class="nps-btn" onclick="selectNPS('nps-main',this,1)">1</button>
+                    <button class="nps-btn" onclick="selectNPS('nps-main',this,2)">2</button>
+                    <button class="nps-btn" onclick="selectNPS('nps-main',this,3)">3</button>
+                    <button class="nps-btn" onclick="selectNPS('nps-main',this,4)">4</button>
+                    <button class="nps-btn" onclick="selectNPS('nps-main',this,5)">5</button>
+                    <button class="nps-btn" onclick="selectNPS('nps-main',this,6)">6</button>
+                    <button class="nps-btn" onclick="selectNPS('nps-main',this,7)">7</button>
+                    <button class="nps-btn" onclick="selectNPS('nps-main',this,8)">8</button>
+                    <button class="nps-btn" onclick="selectNPS('nps-main',this,9)">9</button>
+                    <button class="nps-btn" onclick="selectNPS('nps-main',this,10)">10</button>
+                </div>
+                <div class="scale-label-row"><span>← Nada probable (Detractor)</span><span>Muy probable (Promotor) →</span></div>
+                <div class="sub-item-label" style="margin-top:8px">P20a. ¿Por qué elegiste ese número? (opcional)</div>
+                <textarea class="open-field open-field-sm" id="txt-nps" placeholder="Cuéntanos el motivo…"></textarea>
+            </div>
+        </div>
+        <div class="section-card">
+            <div class="section-title"><span class="icon">😊</span>CSAT — Satisfacción General</div>
+            <div class="sub-item">
+                <div class="sub-item-label">P21. Considerando tu última visita, ¿cuán satisfecho/a quedaste con la experiencia?</div>
+                <div class="emoji-scale" id="es-csat">
+                    <button class="emoji-btn" onclick="selectEmoji('es-csat',this,1)"><span class="eb-emoji">😤</span><span class="eb-num">1</span><span class="eb-word">Muy<br>insatisf.</span></button>
+                    <button class="emoji-btn" onclick="selectEmoji('es-csat',this,2)"><span class="eb-emoji">😕</span><span class="eb-num">2</span><span class="eb-word">Insatisf.</span></button>
+                    <button class="emoji-btn" onclick="selectEmoji('es-csat',this,3)"><span class="eb-emoji">😐</span><span class="eb-num">3</span><span class="eb-word">Neutral</span></button>
+                    <button class="emoji-btn" onclick="selectEmoji('es-csat',this,4)"><span class="eb-emoji">😊</span><span class="eb-num">4</span><span class="eb-word">Satisf.</span></button>
+                    <button class="emoji-btn" onclick="selectEmoji('es-csat',this,5)"><span class="eb-emoji">🤩</span><span class="eb-num">5</span><span class="eb-word">Muy<br>satisf.</span></button>
+                </div>
+            </div>
+        </div>
+        <div class="section-card">
+            <div class="section-title"><span class="icon">⚡</span>CES — Facilidad de la Visita</div>
+            <div class="sub-item">
+                <div class="sub-item-label">P22. ¿Qué tan fácil fue completar tu visita en Primax hoy (cargar, pagar y salir)?</div>
+                <div style="display:flex;flex-direction:column;gap:6px">
+                    <div class="word-scale" id="ws-ces">
+                        <button class="word-btn" onclick="selectWord('ws-ces',this,1)"><span class="wn">1</span><span class="wl">Muy<br>difícil</span></button>
+                        <button class="word-btn" onclick="selectWord('ws-ces',this,2)"><span class="wn">2</span><span class="wl">Difícil</span></button>
+                        <button class="word-btn" onclick="selectWord('ws-ces',this,3)"><span class="wn">3</span><span class="wl">Ni fácil<br>ni difícil</span></button>
+                        <button class="word-btn" onclick="selectWord('ws-ces',this,4)"><span class="wn">4</span><span class="wl">Fácil</span></button>
+                        <button class="word-btn" onclick="selectWord('ws-ces',this,5)"><span class="wn">5</span><span class="wl">Muy<br>fácil</span></button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="cta-wrap">
+            <button class="btn-back" onclick="go(7)">← Atrás</button>
+            <button class="btn-next" onclick="goNext(8,9)">Siguiente <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+        </div>
+    </div>
+
+    <!-- S9: CIERRE -->
+    <div class="screen" id="s9">
+        <div class="q-label">Sección 8 · Cierre</div>
+        <div class="q-title">¡Ya casi <em>terminamos</em>!</div>
+        <div class="section-card">
+            <div class="section-title"><span class="icon">💡</span>P23. Oportunidad de mejora</div>
+            <div class="sub-item">
+                <div class="sub-item-label">Si pudieras mejorar UN solo aspecto de tu experiencia en Primax, ¿cuál sería?</div>
+                <textarea class="open-field" id="txt-mejora" placeholder="Tu sugerencia más importante…"></textarea>
+            </div>
+        </div>
+        <div class="cta-wrap">
+            <button class="btn-back" onclick="go(8)">← Atrás</button>
+            <button class="btn-next" onclick="go(10)">Siguiente <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+        </div>
+    </div>
+
+    <!-- S10: DATOS -->
+    <div class="screen" id="s10">
+        <div class="q-title">¡Casi <em>terminamos</em>!</div>
+        <div class="q-sub">Déjanos tus datos para participar por la Giftcard de S/250.</div>
+        <div class="section-card">
+            <div style="display:flex;flex-direction:column;gap:12px">
+                <input type="text" id="dni" class="data-input" placeholder="Número de DNI (8 dígitos)" maxlength="8">
+                <input type="tel" id="celular" class="data-input" placeholder="Número de celular (9 dígitos)" maxlength="9">
+                <div style="font-size:12px;color:var(--text-soft);margin-top:4px">Marca ambos casilleros para confirmar tu participación en el sorteo.</div>
+                <label class="check-label"><input type="checkbox" id="check-datos"> Autorizo el uso de mis datos personales según la <a href="https://primax.com.pe/wp-content/uploads/2023/02/Politica-de-Privacidad-y-Uso-de-Cookies-de-los-canales-de-atencion-al-cliente.pdf" target="_blank">Política de Privacidad</a>.</label>
+                <label class="check-label"><input type="checkbox" id="check-terminos"> Acepto los <a href="https://docs.google.com/document/d/1LGtWs-e0enM1Zt2IhBd0-5tE31EMZFVHvvA2_LUWwQo/edit?usp=sharing" target="_blank">términos y condiciones</a> del sorteo de la Giftcard de S/250.</label>
+            </div>
+        </div>
+        <div class="cta-wrap">
+            <button class="btn-back" onclick="go(9)">← Atrás</button>
+            <button class="btn-next" onclick="validarYEnviar()">Finalizar <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+        </div>
+    </div>
+
+    <!-- S11: GRACIAS -->
+    <div class="screen" id="s11">
+        <div style="display:flex;flex-direction:column;gap:16px">
+            <div style="font-size:48px">🎉</div>
+            <div class="ty-title">¡Gracias por<br>compartir tu<br><em style="font-style:normal;color:var(--orange)">opinión!</em></div>
+            <div class="intro-divider"></div>
+            <div class="ty-sub">Ya estás participando en el sorteo. ¡Mucha suerte y hasta pronto en Primax!</div>
+        </div>
+    </div>
+
+</div>
+
+<script>
+    const TOTAL_STEPS = 11;
+    let currentScreen = 0;
+    const answers = {};
+    const checkboxAnswers = {};
+
+    const LABELS = {
+        0:'Inicio', 1:'Segmentación', 2:'Llegada', 3:'Atención isla',
+        4:'Pago', 5:'Servicios', 6:'Bonus', 7:'Promociones',
+        8:'NPS · CSAT · CES', 9:'Cierre', 10:'Datos', 11:'¡Gracias!'
+    };
+
+    const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbzam8C2VH_gmspFBDZvD96vRTiXgA2Ej9XimlxJJHDFbij7HmJS0oPnTPDLsS_cvuhZxg/exec";
+
+    function go(n) {
+        document.getElementById('s'+currentScreen).classList.remove('active');
+        currentScreen = n;
+        document.getElementById('s'+n).classList.add('active');
+        updateProgress();
+        window.scrollTo({top:0, behavior:'smooth'});
+    }
+
+    function goNext(from, to) {
+        go(to);
+    }
+
+    function updateProgress() {
+        const pct = Math.round((currentScreen / TOTAL_STEPS) * 100);
+        document.getElementById('progress-fill').style.width = pct + '%';
+        document.getElementById('step-label').textContent = LABELS[currentScreen] || 'Encuesta';
+    }
+
+    // Select single choice
+    function selectSingle(key, btn, val, listId) {
+        document.querySelectorAll('#'+listId+' .choice-item').forEach(b => b.classList.remove('selected'));
+        btn.classList.add('selected');
+        answers[key] = val;
+        // Special cases
+        if (key === 'combustible') {
+            document.getElementById('gnv-block').style.display = (val===3||val===4) ? 'block' : 'none';
+        }
+        if (key === 'eleccion') {
+            const condOtras = document.getElementById('cond-otras-marcas');
+            condOtras.classList.toggle('visible', val===3);
+        }
+    }
+
+    function selectEmoji(groupId, btn, val) {
+        document.getElementById(groupId).querySelectorAll('.emoji-btn').forEach(b => b.classList.remove('selected'));
+        btn.classList.add('selected');
+        answers[groupId] = val;
+    }
+
+    function selectWord(groupId, btn, val) {
+        document.querySelectorAll('#'+groupId+' .word-btn').forEach(b => b.classList.remove('selected'));
+        btn.classList.add('selected');
+        answers[groupId] = val;
+    }
+
+    function selectNPS(groupId, btn, val) {
+        document.querySelectorAll('#'+groupId+' .nps-btn').forEach(b => b.classList.remove('selected'));
+        btn.classList.add('selected');
+        answers[groupId] = val;
+    }
+
+    function selectYN(groupId, btn, val, condId) {
+        document.querySelectorAll('#'+groupId+' .yn-btn').forEach(b => b.classList.remove('selected'));
+        btn.classList.add('selected');
+        answers[groupId] = val;
+        document.getElementById(condId).classList.toggle('visible', val==='si');
+    }
+
+    function selectCtRow(rowId, val) {
+        const si = document.getElementById(rowId+'-si');
+        const no = document.getElementById(rowId+'-no');
+        si.className = 'ct-radio' + (val==='si' ? ' selected-si' : '');
+        no.className = 'ct-radio' + (val==='no' ? ' selected-no' : '');
+        answers[rowId] = val;
+    }
+
+    function toggleCheck(btn, key) {
+        btn.classList.toggle('selected');
+        checkboxAnswers[key] = btn.classList.contains('selected');
+        // Show/hide service blocks
+        const usedBano = checkboxAnswers['serv_bano'];
+        const usedAny = checkboxAnswers['serv_bano'] || checkboxAnswers['serv_aire'] || checkboxAnswers['serv_lavado'] || checkboxAnswers['serv_listo'];
+        const blockBano = document.getElementById('block-bano');
+        const blockServGral = document.getElementById('block-servicios-gral');
+        if (blockBano) blockBano.style.display = usedBano ? 'block' : 'none';
+        if (blockServGral) blockServGral.style.display = usedAny ? 'block' : 'none';
+    }
+
+    function toggleNinguno(btn, listId, key) {
+        const wasSelected = btn.classList.contains('selected');
+        if (!wasSelected) {
+            document.querySelectorAll('#'+listId+' .checkbox-item').forEach(b => b.classList.remove('selected'));
+            btn.classList.add('selected');
+            Object.keys(checkboxAnswers).forEach(k => { if(k.startsWith('serv_')) checkboxAnswers[k] = false; });
+            checkboxAnswers[key] = true;
+            const blockBano = document.getElementById('block-bano');
+            const blockServGral = document.getElementById('block-servicios-gral');
+            if (blockBano) blockBano.style.display = 'none';
+            if (blockServGral) blockServGral.style.display = 'none';
+        } else {
+            btn.classList.remove('selected');
+            checkboxAnswers[key] = false;
+        }
+    }
+
+    function toggleCheckMax(btn, key, max, listId) {
+        if (!btn.classList.contains('selected')) {
+            const selected = document.querySelectorAll('#'+listId+' .checkbox-item.selected').length;
+            if (selected >= max) { alert('Puedes elegir máximo '+max+' opciones.'); return; }
+        }
+        btn.classList.toggle('selected');
+        checkboxAnswers[key] = btn.classList.contains('selected');
+    }
+
+    function showBonus(val) {
+        document.getElementById('cond-bonus').classList.toggle('visible', val===1||val===2);
+    }
+
+    function validarYEnviar() {
+        const dni = document.getElementById('dni').value.trim();
+        const cel = document.getElementById('celular').value.trim();
+        const chkDatos = document.getElementById('check-datos').checked;
+        const chkTerminos = document.getElementById('check-terminos').checked;
+        if (dni.length < 8 || cel.length < 9 || !chkDatos || !chkTerminos) {
+            alert('Por favor, completa tu DNI, celular y acepta ambos casilleros para finalizar.');
+            return;
+        }
+        submitSurvey();
+    }
+
+    function buildPayload() {
+        return {
+            fuente: 'primax_estacion',
+            dni: document.getElementById('dni').value.trim(),
+            celular: document.getElementById('celular').value.trim(),
+            combustible: answers['combustible']||'',
+            frecuencia: answers['frecuencia']||'',
+            eleccion: answers['eleccion']||'',
+            otras_marcas: document.getElementById('txt-otras-marcas')?.value?.trim()||'',
+            facilidad_llegada: answers['ws-facilidad']||'',
+            isla_disponible: answers['isla']||'',
+            p3_saludo: answers['ctr-saludo']||'',
+            p3_confirmacion: answers['ctr-confirmacion']||'',
+            p3_marcador: answers['ctr-marcador']||'',
+            p3_uniforme: answers['ctr-uniforme']||'',
+            p3_promocion: answers['ctr-promocion-isla']||'',
+            atencion_playero: answers['atencion_playero']||'',
+            gas_comodidad: answers['es-gas-comodidad']||'',
+            gas_rapidez: answers['es-gas-rapidez']||'',
+            pago_rapido: answers['ws-pago']||'',
+            p7_cobro_disp: answers['ctr-disponible-cobro']||'',
+            p7_boleta: answers['ctr-boleta']||'',
+            p7_bonus_pago: answers['ctr-bonus-pago']||'',
+            p7_despedida: answers['ctr-despedida-p']||'',
+            medios_pago_ok: answers['yn-medios']||'',
+            medio_pago_faltante: document.getElementById('txt-medio-pago')?.value?.trim()||'',
+            serv_bano: checkboxAnswers['serv_bano']?'Sí':'',
+            serv_aire: checkboxAnswers['serv_aire']?'Sí':'',
+            serv_lavado: checkboxAnswers['serv_lavado']?'Sí':'',
+            serv_listo: checkboxAnswers['serv_listo']?'Sí':'',
+            bano_limpieza: answers['es-bano-limpieza']||'',
+            bano_olor: answers['es-bano-olor']||'',
+            bano_estado: answers['es-bano-estado']||'',
+            bano_ilum: answers['es-bano-ilum']||'',
+            comentario_bano: document.getElementById('txt-bano')?.value?.trim()||'',
+            serv_disp: answers['es-serv-disp']||'',
+            serv_calidad: answers['es-serv-calidad']||'',
+            bonus_conoce: answers['bonus']||'',
+            bonus_lealtad: answers['ws-bonus']||'',
+            promo_ofrecida: answers['yn-promo']||'',
+            promo_atractiva: answers['ws-promo']||'',
+            nps: answers['nps-main']!==undefined ? answers['nps-main'] : '',
+            nps_motivo: document.getElementById('txt-nps')?.value?.trim()||'',
+            csat: answers['es-csat']||'',
+            ces: answers['ws-ces']||'',
+            mejora: document.getElementById('txt-mejora')?.value?.trim()||'',
+        };
+    }
+
+    async function submitSurvey() {
+        try {
+            await fetch(SCRIPT_URL, { method:'POST', body:JSON.stringify(buildPayload()), mode:'no-cors' });
+        } catch(e) { console.error(e); }
+        go(11);
+    }
+
+    updateProgress();
+</script>
+</body>
+</html>
