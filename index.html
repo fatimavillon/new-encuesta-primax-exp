@@ -623,7 +623,7 @@
         8:'NPS · CSAT · CES', 9:'Cierre', 10:'Datos', 11:'¡Gracias!'
     };
 
-    const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbzam8C2VH_gmspFBDZvD96vRTiXgA2Ej9XimlxJJHDFbij7HmJS0oPnTPDLsS_cvuhZxg/exec";
+    const SCRIPT_URL = "https://script.google.com/a/macros/utec.edu.pe/s/AKfycbytgMpgHgOGgKQXPW7pVcIR61ANRXYtaZWZ_05sXAOdbKfBm80hBwDVlPL2QfUYOerH/exec";
 
     function go(n) {
         document.getElementById('s'+currentScreen).classList.remove('active');
@@ -894,6 +894,19 @@
             await fetch(SCRIPT_URL, { method:'POST', body:JSON.stringify(buildPayload()), mode:'no-cors' });
         } catch(e) { console.error(e); }
         go(11);
+    }
+
+    // Función para actualizar la barra de progreso y las etiquetas del menú superior
+    function updateProgress() {
+        const fill = document.getElementById('progress-fill');
+        const label = document.getElementById('step-label');
+        if (fill && label) {
+            // Calcula el porcentaje basado en la pantalla actual
+            const pct = (currentScreen / TOTAL_STEPS) * 100;
+            fill.style.width = pct + '%';
+            // Cambia el texto del paso usando tu objeto LABELS
+            label.textContent = LABELS[currentScreen] || 'Encuesta';
+        }
     }
 </script>
 </body>
