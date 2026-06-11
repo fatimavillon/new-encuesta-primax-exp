@@ -96,21 +96,6 @@
         .yn-btn .yn-emoji { font-size: 24px; }
         .yn-btn:hover { border-color: var(--orange); background: var(--orange-pale); }
         .yn-btn.selected { border-color: var(--orange); background: var(--orange); color: #fff; box-shadow: var(--shadow-lg); }
-        /* Sí/No table row */
-        .checklist-table { display: flex; flex-direction: column; gap: 0; border: 1px solid var(--border); border-radius: 14px; overflow: hidden; }
-        .ct-header { display: grid; grid-template-columns: 1fr 60px 60px; gap: 0; background: var(--surface2); padding: 10px 16px; border-bottom: 1px solid var(--border); }
-        .ct-header span { font-size: 10px; letter-spacing: 1px; text-transform: uppercase; color: var(--text-soft); font-weight: 600; text-align: center; }
-        .ct-header span:first-child { text-align: left; }
-        .ct-row { display: grid; grid-template-columns: 1fr 60px 60px; gap: 0; padding: 12px 16px; border-bottom: 1px solid var(--border); background: var(--surface); align-items: center; transition: background 0.12s; }
-        .ct-row:last-child { border-bottom: none; }
-        .ct-row:hover { background: var(--orange-pale); }
-        .ct-label { font-size: 13px; color: var(--text); line-height: 1.45; }
-        .ct-cell { display: flex; align-items: center; justify-content: center; }
-        .ct-radio { width: 20px; height: 20px; border-radius: 50%; border: 2px solid var(--border-strong); background: var(--surface2); cursor: pointer; transition: all 0.14s; display: flex; align-items: center; justify-content: center; }
-        .ct-radio.selected-si { background: var(--orange); border-color: var(--orange); }
-        .ct-radio.selected-no { background: #ef4444; border-color: #ef4444; }
-        .ct-radio::after { content: ''; width: 8px; height: 8px; border-radius: 50%; background: #fff; opacity: 0; transition: opacity 0.14s; }
-        .ct-radio.selected-si::after, .ct-radio.selected-no::after { opacity: 1; }
         /* Textarea */
         .open-field { width: 100%; padding: 14px 16px; border: 1.5px solid var(--border); border-radius: 14px; background: var(--surface); color: var(--text); font-family: 'DM Sans', sans-serif; font-size: 14px; font-weight: 300; resize: none; min-height: 100px; transition: border-color 0.17s, box-shadow 0.17s; outline: none; box-shadow: var(--shadow-sm); }
         .open-field::placeholder { color: var(--text-soft); }
@@ -235,7 +220,7 @@
                 </div>
             </div>
             <div class="sub-item">
-                <div class="sub-item-label">P2. Al llegar, ¿encontraste rápidamente una isla disponible?</div>
+                <div class="sub-item-label">P2. Al llegar, ¿encontraste rápidamente un surtidor de combustible (isla) disponible?</div>
                 <div class="choice-list" id="cl-isla">
                     <button class="choice-item" onclick="selectSingle('isla',this,1,'cl-isla')"><span class="choice-num">A</span>Sí, de inmediato</button>
                     <button class="choice-item" onclick="selectSingle('isla',this,2,'cl-isla')"><span class="choice-num">B</span>Esperé un tiempo razonable</button>
@@ -254,48 +239,81 @@
         <div class="q-label">Sección 2 · Atención en Isla</div>
         <div class="q-title">El <em>playero</em> que te atendió</div>
         <div class="section-card">
-            <div class="section-title"><span class="icon">🤝</span>P3. Durante el abastecimiento, ¿ocurrieron estos aspectos?</div>
-            <div class="checklist-table">
-                <div class="ct-header"><span>Aspecto</span><span>Sí</span><span>No</span></div>
-                <div class="ct-row" id="ctr-saludo"><div class="ct-label">El playero te saludó y dio la bienvenida de forma amable</div><div class="ct-cell"><div class="ct-radio" onclick="selectCtRow('ctr-saludo','si')" id="ctr-saludo-si"></div></div><div class="ct-cell"><div class="ct-radio" onclick="selectCtRow('ctr-saludo','no')" id="ctr-saludo-no"></div></div></div>
-                <div class="ct-row" id="ctr-confirmacion"><div class="ct-label">El playero confirmó el tipo de combustible y monto antes de abastecer</div><div class="ct-cell"><div class="ct-radio" onclick="selectCtRow('ctr-confirmacion','si')" id="ctr-confirmacion-si"></div></div><div class="ct-cell"><div class="ct-radio" onclick="selectCtRow('ctr-confirmacion','no')" id="ctr-confirmacion-no"></div></div></div>
-                <div class="ct-row" id="ctr-marcador"><div class="ct-label">El playero precisó que el marcador estaba en cero al iniciar</div><div class="ct-cell"><div class="ct-radio" onclick="selectCtRow('ctr-marcador','si')" id="ctr-marcador-si"></div></div><div class="ct-cell"><div class="ct-radio" onclick="selectCtRow('ctr-marcador','no')" id="ctr-marcador-no"></div></div></div>
-                <div class="ct-row" id="ctr-uniforme"><div class="ct-label">El playero presentó imagen adecuada (uniforme correcto e implementos de seguridad)</div><div class="ct-cell"><div class="ct-radio" onclick="selectCtRow('ctr-uniforme','si')" id="ctr-uniforme-si"></div></div><div class="ct-cell"><div class="ct-radio" onclick="selectCtRow('ctr-uniforme','no')" id="ctr-uniforme-no"></div></div></div>
-                <div class="ct-row" id="ctr-promocion-isla"><div class="ct-label">El playero te ofreció información sobre promociones, Bonus u otros beneficios</div><div class="ct-cell"><div class="ct-radio" onclick="selectCtRow('ctr-promocion-isla','si')" id="ctr-promocion-isla-si"></div></div><div class="ct-cell"><div class="ct-radio" onclick="selectCtRow('ctr-promocion-isla','no')" id="ctr-promocion-isla-no"></div></div></div>
+            <div class="section-title"><span class="icon">🤝</span>P3. ¿Cómo calificarías la atención recibida por el colaborador (playero)?</div>
+
+            <div class="sub-item">
+                <div class="sub-item-label">Amabilidad y trato durante la atención</div>
+                <div class="emoji-scale" id="es-col-trato">
+                    <button class="emoji-btn" onclick="selectEmoji('es-col-trato',this,1)"><span class="eb-emoji">😤</span><span class="eb-num">1</span></button>
+                    <button class="emoji-btn" onclick="selectEmoji('es-col-trato',this,2)"><span class="eb-emoji">😕</span><span class="eb-num">2</span></button>
+                    <button class="emoji-btn" onclick="selectEmoji('es-col-trato',this,3)"><span class="eb-emoji">😐</span><span class="eb-num">3</span></button>
+                    <button class="emoji-btn" onclick="selectEmoji('es-col-trato',this,4)"><span class="eb-emoji">😊</span><span class="eb-num">4</span></button>
+                    <button class="emoji-btn" onclick="selectEmoji('es-col-trato',this,5)"><span class="eb-emoji">🤩</span><span class="eb-num">5</span></button>
+                </div>
             </div>
-            <div class="sub-item" style="margin-top:4px">
-                <div class="sub-item-label">P4. Durante la carga, ¿cómo describirías la atención del playero?</div>
+
+            <div class="sub-item">
+                <div class="sub-item-label">Saludo de bienvenida y despedida</div>
+                <div class="emoji-scale" id="es-col-saludo">
+                    <button class="emoji-btn" onclick="selectEmoji('es-col-saludo',this,1)"><span class="eb-emoji">😤</span><span class="eb-num">1</span></button>
+                    <button class="emoji-btn" onclick="selectEmoji('es-col-saludo',this,2)"><span class="eb-emoji">😕</span><span class="eb-num">2</span></button>
+                    <button class="emoji-btn" onclick="selectEmoji('es-col-saludo',this,3)"><span class="eb-emoji">😐</span><span class="eb-num">3</span></button>
+                    <button class="emoji-btn" onclick="selectEmoji('es-col-saludo',this,4)"><span class="eb-emoji">😊</span><span class="eb-num">4</span></button>
+                    <button class="emoji-btn" onclick="selectEmoji('es-col-saludo',this,5)"><span class="eb-emoji">🤩</span><span class="eb-num">5</span></button>
+                </div>
+            </div>
+
+            <div class="sub-item">
+                <div class="sub-item-label">Presentación e imagen personal del colaborador</div>
+                <div class="emoji-scale" id="es-col-imagen">
+                    <button class="emoji-btn" onclick="selectEmoji('es-col-imagen',this,1)"><span class="eb-emoji">😤</span><span class="eb-num">1</span></button>
+                    <button class="emoji-btn" onclick="selectEmoji('es-col-imagen',this,2)"><span class="eb-emoji">😕</span><span class="eb-num">2</span></button>
+                    <button class="emoji-btn" onclick="selectEmoji('es-col-imagen',this,3)"><span class="eb-emoji">😐</span><span class="eb-num">3</span></button>
+                    <button class="emoji-btn" onclick="selectEmoji('es-col-imagen',this,4)"><span class="eb-emoji">😊</span><span class="eb-num">4</span></button>
+                    <button class="emoji-btn" onclick="selectEmoji('es-col-imagen',this,5)"><span class="eb-emoji">🤩</span><span class="eb-num">5</span></button>
+                </div>
+            </div>
+
+            <div class="sub-item">
+                <div class="sub-item-label">Uso de implementos de seguridad en la carga de combustible GNV / GLP</div>
+                <div class="emoji-scale" id="es-col-seguridad">
+                    <button class="emoji-btn" onclick="selectEmoji('es-col-seguridad',this,1)"><span class="eb-emoji">😤</span><span class="eb-num">1</span></button>
+                    <button class="emoji-btn" onclick="selectEmoji('es-col-seguridad',this,2)"><span class="eb-emoji">😕</span><span class="eb-num">2</span></button>
+                    <button class="emoji-btn" onclick="selectEmoji('es-col-seguridad',this,3)"><span class="eb-emoji">😐</span><span class="eb-num">3</span></button>
+                    <button class="emoji-btn" onclick="selectEmoji('es-col-seguridad',this,4)"><span class="eb-emoji">😊</span><span class="eb-num">4</span></button>
+                    <button class="emoji-btn" onclick="selectEmoji('es-col-seguridad',this,5)"><span class="eb-emoji">🤩</span><span class="eb-num">5</span></button>
+                </div>
+            </div>
+
+            <div class="sub-item">
+                <div class="sub-item-label">Ofrecimiento de promociones y beneficios Primax / Bonus</div>
+                <div class="emoji-scale" id="es-col-promo">
+                    <button class="emoji-btn" onclick="selectEmoji('es-col-promo',this,1)"><span class="eb-emoji">😤</span><span class="eb-num">1</span></button>
+                    <button class="emoji-btn" onclick="selectEmoji('es-col-promo',this,2)"><span class="eb-emoji">😕</span><span class="eb-num">2</span></button>
+                    <button class="emoji-btn" onclick="selectEmoji('es-col-promo',this,3)"><span class="eb-emoji">😐</span><span class="eb-num">3</span></button>
+                    <button class="emoji-btn" onclick="selectEmoji('es-col-promo',this,4)"><span class="eb-emoji">😊</span><span class="eb-num">4</span></button>
+                    <button class="emoji-btn" onclick="selectEmoji('es-col-promo',this,5)"><span class="eb-emoji">🤩</span><span class="eb-num">5</span></button>
+                </div>
+            </div>
+
+            <div class="sub-item">
+                <div class="sub-item-label">Presencia disponible del colaborador para atenderte</div>
+                <div class="emoji-scale" id="es-col-disp">
+                    <button class="emoji-btn" onclick="selectEmoji('es-col-disp',this,1)"><span class="eb-emoji">😤</span><span class="eb-num">1</span></button>
+                    <button class="emoji-btn" onclick="selectEmoji('es-col-disp',this,2)"><span class="eb-emoji">😕</span><span class="eb-num">2</span></button>
+                    <button class="emoji-btn" onclick="selectEmoji('es-col-disp',this,3)"><span class="eb-emoji">😐</span><span class="eb-num">3</span></button>
+                    <button class="emoji-btn" onclick="selectEmoji('es-col-disp',this,4)"><span class="eb-emoji">😊</span><span class="eb-num">4</span></button>
+                    <button class="emoji-btn" onclick="selectEmoji('es-col-disp',this,5)"><span class="eb-emoji">🤩</span><span class="eb-num">5</span></button>
+                </div>
+            </div>
+
+            <div class="sub-item" style="margin-top:12px">
+                <div class="sub-item-label">P4. Durante el proceso de carga de combustible, ¿cómo describirías la atención del playero?</div>
                 <div class="choice-list" id="cl-atencion-playero">
-                    <button class="choice-item" onclick="selectSingle('atencion_playero',this,1,'cl-atencion-playero')"><span class="choice-num">A</span>Se mantuvo presente y atento durante todo el proceso</button>
+                    <button class="choice-item" onclick="selectSingle('atencion_playero',this,1,'cl-atencion-playero')"><span class="choice-num">A</span>Se mantuvo presente y atento durante todo el proceso de carga</button>
                     <button class="choice-item" onclick="selectSingle('atencion_playero',this,2,'cl-atencion-playero')"><span class="choice-num">B</span>Se ausentó un momento pero regresó oportunamente para el cobro</button>
-                    <button class="choice-item" onclick="selectSingle('atencion_playero',this,3,'cl-atencion-playero')"><span class="choice-num">C</span>Se fue a atender otra isla y tardó en regresar</button>
+                    <button class="choice-item" onclick="selectSingle('atencion_playero',this,3,'cl-atencion-playero')"><span class="choice-num">C</span>Se fue a atender otra isla y tardó en regresar para cobrarme</button>
                     <button class="choice-item" onclick="selectSingle('atencion_playero',this,4,'cl-atencion-playero')"><span class="choice-num">D</span>Tuve que llamarle o esperarle para que viniera a cobrarme</button>
-                </div>
-            </div>
-        </div>
-        <div id="gnv-block" style="display:none">
-            <div class="filter-badge">🔧 Solo aplica para clientes GNV / GLP</div>
-            <div class="section-card" style="margin-top:10px">
-                <div class="section-title"><span class="icon">⚙️</span>P5. Proceso de abastecimiento de gas</div>
-                <div class="sub-item">
-                    <div class="sub-item-label">Comodidad del proceso físico (bajar del vehículo, apertura del capó)</div>
-                    <div class="emoji-scale" id="es-gas-comodidad">
-                        <button class="emoji-btn" onclick="selectEmoji('es-gas-comodidad',this,1)"><span class="eb-emoji">😤</span><span class="eb-num">1</span><span class="eb-word">Muy<br>malo</span></button>
-                        <button class="emoji-btn" onclick="selectEmoji('es-gas-comodidad',this,2)"><span class="eb-emoji">😕</span><span class="eb-num">2</span><span class="eb-word">Malo</span></button>
-                        <button class="emoji-btn" onclick="selectEmoji('es-gas-comodidad',this,3)"><span class="eb-emoji">😐</span><span class="eb-num">3</span><span class="eb-word">Regular</span></button>
-                        <button class="emoji-btn" onclick="selectEmoji('es-gas-comodidad',this,4)"><span class="eb-emoji">😊</span><span class="eb-num">4</span><span class="eb-word">Bueno</span></button>
-                        <button class="emoji-btn" onclick="selectEmoji('es-gas-comodidad',this,5)"><span class="eb-emoji">🤩</span><span class="eb-num">5</span><span class="eb-word">Excl.</span></button>
-                    </div>
-                </div>
-                <div class="sub-item">
-                    <div class="sub-item-label">Rapidez del abastecimiento (escaneo del chip y llenado del tanque)</div>
-                    <div class="emoji-scale" id="es-gas-rapidez">
-                        <button class="emoji-btn" onclick="selectEmoji('es-gas-rapidez',this,1)"><span class="eb-emoji">😤</span><span class="eb-num">1</span><span class="eb-word">Muy<br>malo</span></button>
-                        <button class="emoji-btn" onclick="selectEmoji('es-gas-rapidez',this,2)"><span class="eb-emoji">😕</span><span class="eb-num">2</span><span class="eb-word">Malo</span></button>
-                        <button class="emoji-btn" onclick="selectEmoji('es-gas-rapidez',this,3)"><span class="eb-emoji">😐</span><span class="eb-num">3</span><span class="eb-word">Regular</span></button>
-                        <button class="emoji-btn" onclick="selectEmoji('es-gas-rapidez',this,4)"><span class="eb-emoji">😊</span><span class="eb-num">4</span><span class="eb-word">Bueno</span></button>
-                        <button class="emoji-btn" onclick="selectEmoji('es-gas-rapidez',this,5)"><span class="eb-emoji">🤩</span><span class="eb-num">5</span><span class="eb-word">Excl.</span></button>
-                    </div>
                 </div>
             </div>
         </div>
@@ -315,33 +333,16 @@
                 <div style="display:flex;flex-direction:column;gap:6px">
                     <div class="scale-label-row"><span>Totalmente en desacuerdo</span><span>Totalmente de acuerdo</span></div>
                     <div class="word-scale" id="ws-pago">
-                        <button class="word-btn" onclick="selectWord('ws-pago',this,1)"><span class="wn">1</span><span class="wl">Total<br>desac.</span></button>
-                        <button class="word-btn" onclick="selectWord('ws-pago',this,2)"><span class="wn">2</span><span class="wl">En<br>desac.</span></button>
-                        <button class="word-btn" onclick="selectWord('ws-pago',this,3)"><span class="wn">3</span><span class="wl">Neutral</span></button>
-                        <button class="word-btn" onclick="selectWord('ws-pago',this,4)"><span class="wn">4</span><span class="wl">De<br>acuerdo</span></button>
-                        <button class="word-btn" onclick="selectWord('ws-pago',this,5)"><span class="wn">5</span><span class="wl">Total<br>acuerdo</span></button>
+                        <button class="word-btn" onclick="selectWordPago('ws-pago',this,1)"><span class="wn">1</span><span class="wl">Total<br>desac.</span></button>
+                        <button class="word-btn" onclick="selectWordPago('ws-pago',this,2)"><span class="wn">2</span><span class="wl">En<br>desac.</span></button>
+                        <button class="word-btn" onclick="selectWordPago('ws-pago',this,3)"><span class="wn">3</span><span class="wl">Neutral</span></button>
+                        <button class="word-btn" onclick="selectWordPago('ws-pago',this,4)"><span class="wn">4</span><span class="wl">De<br>acuerdo</span></button>
+                        <button class="word-btn" onclick="selectWordPago('ws-pago',this,5)"><span class="wn">5</span><span class="wl">Total<br>acuerdo</span></button>
                     </div>
                 </div>
-            </div>
-            <div class="sub-item">
-                <div class="sub-item-label">P7. Durante el pago y la despedida, ¿ocurrieron estos aspectos?</div>
-                <div class="checklist-table">
-                    <div class="ct-header"><span>Aspecto</span><span>Sí</span><span>No</span></div>
-                    <div class="ct-row" id="ctr-disponible-cobro"><div class="ct-label">El playero estaba disponible para iniciar el cobro (sin espera)</div><div class="ct-cell"><div class="ct-radio" onclick="selectCtRow('ctr-disponible-cobro','si')" id="ctr-disponible-cobro-si"></div></div><div class="ct-cell"><div class="ct-radio" onclick="selectCtRow('ctr-disponible-cobro','no')" id="ctr-disponible-cobro-no"></div></div></div>
-                    <div class="ct-row" id="ctr-boleta"><div class="ct-label">El playero te consultó si necesitabas boleta o factura</div><div class="ct-cell"><div class="ct-radio" onclick="selectCtRow('ctr-boleta','si')" id="ctr-boleta-si"></div></div><div class="ct-cell"><div class="ct-radio" onclick="selectCtRow('ctr-boleta','no')" id="ctr-boleta-no"></div></div></div>
-                    <div class="ct-row" id="ctr-bonus-pago"><div class="ct-label">El playero te ofreció sumar puntos o beneficios Bonus al pagar</div><div class="ct-cell"><div class="ct-radio" onclick="selectCtRow('ctr-bonus-pago','si')" id="ctr-bonus-pago-si"></div></div><div class="ct-cell"><div class="ct-radio" onclick="selectCtRow('ctr-bonus-pago','no')" id="ctr-bonus-pago-no"></div></div></div>
-                    <div class="ct-row" id="ctr-despedida-p"><div class="ct-label">El playero se despidió de forma cordial al finalizar</div><div class="ct-cell"><div class="ct-radio" onclick="selectCtRow('ctr-despedida-p','si')" id="ctr-despedida-p-si"></div></div><div class="ct-cell"><div class="ct-radio" onclick="selectCtRow('ctr-despedida-p','no')" id="ctr-despedida-p-no"></div></div></div>
-                </div>
-            </div>
-            <div class="sub-item">
-                <div class="sub-item-label">P8. ¿Los medios de pago disponibles (efectivo, tarjeta, Yape/Plin) cubrieron tu necesidad?</div>
-                <div class="yesno-row" id="yn-medios">
-                    <button class="yn-btn" onclick="selectYN('yn-medios',this,'si','cond-medios')"><span class="yn-emoji">✅</span>Sí</button>
-                    <button class="yn-btn" onclick="selectYN('yn-medios',this,'no','cond-medios')"><span class="yn-emoji">❌</span>No</button>
-                </div>
-                <div class="cond-block" id="cond-medios">
-                    <div class="sub-item-label">¿Cuál medio de pago hubieras necesitado?</div>
-                    <input type="text" class="data-input" id="txt-medio-pago" placeholder="Ej: Plin, tarjeta de débito…">
+                <div class="cond-block" id="cond-pago-problema">
+                    <div class="sub-item-label">¿Nos comentas qué fue lo que ocurrió?</div>
+                    <textarea class="open-field" id="txt-pago-problema" placeholder="Detalla el inconveniente con el pago aquí..."></textarea>
                 </div>
             </div>
         </div>
@@ -386,7 +387,7 @@
                     <div class="emoji-scale" id="es-bano-ilum"><button class="emoji-btn" onclick="selectEmoji('es-bano-ilum',this,1)"><span class="eb-emoji">😤</span><span class="eb-num">1</span><span class="eb-word">Muy<br>malo</span></button><button class="emoji-btn" onclick="selectEmoji('es-bano-ilum',this,2)"><span class="eb-emoji">😕</span><span class="eb-num">2</span><span class="eb-word">Malo</span></button><button class="emoji-btn" onclick="selectEmoji('es-bano-ilum',this,3)"><span class="eb-emoji">😐</span><span class="eb-num">3</span><span class="eb-word">Regular</span></button><button class="emoji-btn" onclick="selectEmoji('es-bano-ilum',this,4)"><span class="eb-emoji">😊</span><span class="eb-num">4</span><span class="eb-word">Bueno</span></button><button class="emoji-btn" onclick="selectEmoji('es-bano-ilum',this,5)"><span class="eb-emoji">🤩</span><span class="eb-num">5</span><span class="eb-word">Excl.</span></button></div>
                 </div>
                 <div class="sub-item">
-                    <div class="sub-item-label">P11. ¿Quieres dejarnos algún comentario sobre el baño? (opcional)</div>
+                    <div class="sub-item-label">P11. ¿Te gustaría dejarnos algún comentario sobre el baño? (opcional)</div>
                     <textarea class="open-field open-field-sm" id="txt-bano" placeholder="Comentarios sobre el baño…"></textarea>
                 </div>
             </div>
@@ -447,11 +448,11 @@
 
     <div class="screen" id="s7">
         <div class="q-label">Sección 6 · Promociones y Valor</div>
-        <div class="q-title">Promociones y lo que <em>más valoras</em></div>
+        <div class="q-title">Promociones y lo que <em>valoras</em></div>
         <div class="section-card">
             <div class="section-title"><span class="icon">🏷️</span>Promociones en isla</div>
             <div class="sub-item">
-                <div class="sub-item-label">P15. ¿Notaste o te ofrecieron alguna promoción durante la carga de combustible?</div>
+                <div class="sub-item-label">P15. Durante la carga de combustible, ¿notaste o te ofrecieron alguna promoción de productos en la estación (combos de galleta, frugos, agua u otras ofertas)?</div>
                 <div class="yesno-row" id="yn-promo">
                     <button class="yn-btn" onclick="selectYN('yn-promo',this,'si','cond-promo')"><span class="yn-emoji">✅</span>Sí</button>
                     <button class="yn-btn" onclick="selectYN('yn-promo',this,'no','cond-promo')"><span class="yn-emoji">❌</span>No</button>
@@ -468,7 +469,7 @@
                 </div>
             </div>
             <div class="sub-item">
-                <div class="sub-item-label">P17. ¿Qué tipo de promoción valorarías más al cargar? [Elige hasta 3]</div>
+                <div class="sub-item-label">P17. ¿Qué tipo de promoción valorarías más al cargar combustible en Primax? [Elige hasta 3 opciones]</div>
                 <div class="checkbox-list" id="chk-tipo-promo">
                     <button class="checkbox-item" onclick="toggleCheckMax(this,'serv_agua',3,'chk-tipo-promo')"><span class="cb-box"><span class="cb-check">✓</span></span>Agua embotellada</button>
                     <button class="checkbox-item" onclick="toggleCheckMax(this,'serv_energizante',3,'chk-tipo-promo')"><span class="cb-box"><span class="cb-check">✓</span></span>Bebida energizante (Volt, Monster, Red Bull)</button>
@@ -477,28 +478,6 @@
                     <button class="checkbox-item" onclick="toggleCheckMax(this,'serv_puntos',3,'chk-tipo-promo')"><span class="cb-box"><span class="cb-check">✓</span></span>Puntos Bonus adicionales por la carga</button>
                     <button class="checkbox-item" onclick="toggleCheckMax(this,'serv_listo_prod',3,'chk-tipo-promo')"><span class="cb-box"><span class="cb-check">✓</span></span>Producto de Tienda Listo a elección</button>
                 </div>
-            </div>
-        </div>
-        <div class="section-card">
-            <div class="section-title"><span class="icon">⭐</span>Lo que más valoras</div>
-            <div class="sub-item">
-                <div class="sub-item-label">P18. De los siguientes aspectos, ¿cuáles son los <strong>5 que más valoras</strong> al elegir dónde cargar? [Elige exactamente 5]</div>
-                <div class="checkbox-list" id="chk-atributos">
-                    <button class="checkbox-item" onclick="toggleCheckMax(this,'atr_isla',5,'chk-atributos')"><span class="cb-box"><span class="cb-check">✓</span></span>Disponibilidad inmediata de isla, sin tiempo de espera</button>
-                    <button class="checkbox-item" onclick="toggleCheckMax(this,'atr_seguridad',5,'chk-atributos')"><span class="cb-box"><span class="cb-check">✓</span></span>Seguridad al ingresar y salir de la estación</button>
-                    <button class="checkbox-item" onclick="toggleCheckMax(this,'atr_trato',5,'chk-atributos')"><span class="cb-box"><span class="cb-check">✓</span></span>Amabilidad y trato del playero</button>
-                    <button class="checkbox-item" onclick="toggleCheckMax(this,'atr_rapidez',5,'chk-atributos')"><span class="cb-box"><span class="cb-check">✓</span></span>Rapidez en el servicio de carga</button>
-                    <button class="checkbox-item" onclick="toggleCheckMax(this,'atr_confianza',5,'chk-atributos')"><span class="cb-box"><span class="cb-check">✓</span></span>Confianza y seguridad durante el abastecimiento</button>
-                    <button class="checkbox-item" onclick="toggleCheckMax(this,'atr_express',5,'chk-atributos')"><span class="cb-box"><span class="cb-check">✓</span></span>Servicios exprés mientras esperas (limpieza de parabrisa, revisión de líquidos)</button>
-                    <button class="checkbox-item" onclick="toggleCheckMax(this,'atr_complem',5,'chk-atributos')"><span class="cb-box"><span class="cb-check">✓</span></span>Calidad de servicios complementarios (baño, aire para llantas, lavado)</button>
-                    <button class="checkbox-item" onclick="toggleCheckMax(this,'atr_promos',5,'chk-atributos')"><span class="cb-box"><span class="cb-check">✓</span></span>Promociones y beneficios atractivos (combos, Bonus, descuentos)</button>
-                    <button class="checkbox-item" onclick="toggleCheckMax(this,'atr_calidad_comb',5,'chk-atributos')"><span class="cb-box"><span class="cb-check">✓</span></span>Calidad y confianza en el combustible</button>
-                    <button class="checkbox-item" onclick="toggleCheckMax(this,'atr_precio',5,'chk-atributos')"><span class="cb-box"><span class="cb-check">✓</span></span>Precio competitivo del combustible</button>
-                </div>
-            </div>
-            <div class="sub-item">
-                <div class="sub-item-label">P19. De los que elegiste, ¿cuál es el MÁS importante para ti?</div>
-                <textarea class="open-field open-field-sm" id="txt-mas-importante" placeholder="Escribe el aspecto más importante…"></textarea>
             </div>
         </div>
         <div class="cta-wrap">
@@ -513,7 +492,7 @@
         <div class="section-card">
             <div class="section-title"><span class="icon">📊</span>NPS — ¿Nos recomendarías?</div>
             <div class="sub-item">
-                <div class="sub-item-label">P20. Considerando tu experiencia completa, ¿con qué probabilidad recomendarías una estación Primax a un familiar o amigo?</div>
+                <div class="sub-item-label">P20. Considerando tu experiencia completa, ¿con qué probabilidad recomendarías una estación Primax a un familiar, amigo o colega?</div>
                 <div class="nps-row" id="nps-main">
                     <button class="nps-btn" onclick="selectNPS('nps-main',this,0)">0</button>
                     <button class="nps-btn" onclick="selectNPS('nps-main',this,1)">1</button>
@@ -528,14 +507,14 @@
                     <button class="nps-btn" onclick="selectNPS('nps-main',this,10)">10</button>
                 </div>
                 <div class="scale-label-row"><span>← Nada probable (Detractor)</span><span>Muy probable (Promotor) →</span></div>
-                <div class="sub-item-label" style="margin-top:8px">P20a. ¿Por qué elegiste ese número? (opcional)</div>
+                <div class="sub-item-label" style="margin-top:8px">P20a. ¿Por qué elegiste ese número?</div>
                 <textarea class="open-field open-field-sm" id="txt-nps" placeholder="Cuéntanos el motivo…"></textarea>
             </div>
         </div>
         <div class="section-card">
             <div class="section-title"><span class="icon">😊</span>CSAT — Satisfacción General</div>
             <div class="sub-item">
-                <div class="sub-item-label">P21. Considerando tu última visita, ¿cuán satisfecho/a quedaste con la experiencia?</div>
+                <div class="sub-item-label">P21. Considerando tu última visita, ¿cuán satisfecho/a quedaste con la experiencia vivida?</div>
                 <div class="emoji-scale" id="es-csat">
                     <button class="emoji-btn" onclick="selectEmoji('es-csat',this,1)"><span class="eb-emoji">😤</span><span class="eb-num">1</span><span class="eb-word">Muy<br>insatisf.</span></button>
                     <button class="emoji-btn" onclick="selectEmoji('es-csat',this,2)"><span class="eb-emoji">😕</span><span class="eb-num">2</span><span class="eb-word">Insatisf.</span></button>
@@ -548,7 +527,7 @@
         <div class="section-card">
             <div class="section-title"><span class="icon">⚡</span>CES — Facilidad de la Visita</div>
             <div class="sub-item">
-                <div class="sub-item-label">P22. ¿Qué tan fácil fue completar tu visita en Primax hoy (cargar, pagar y salir)?</div>
+                <div class="sub-item-label">P22. ¿Qué tan fácil fue completar tu visita en Primax hoy (cargar combustible, pagar y salir)?</div>
                 <div style="display:flex;flex-direction:column;gap:6px">
                     <div class="word-scale" id="ws-ces">
                         <button class="word-btn" onclick="selectWord('ws-ces',this,1)"><span class="wn">1</span><span class="wl">Muy<br>difícil</span></button>
@@ -567,13 +546,13 @@
     </div>
 
     <div class="screen" id="s9">
-        <div class="q-label">Sección 8 · Cierre</div>
+        <div class="q-label">Sección 8 · Pregunta de Cierre</div>
         <div class="q-title">¡Ya casi <em>terminamos</em>!</div>
         <div class="section-card">
             <div class="section-title"><span class="icon">💡</span>P23. Oportunidad de mejora</div>
             <div class="sub-item">
-                <div class="sub-item-label">Si pudieras mejorar UN solo aspecto de tu experiencia en Primax, ¿cuál sería?</div>
-                <textarea class="open-field" id="txt-mejora" placeholder="Tu sugerencia más importante…"></textarea>
+                <div class="sub-item-label">Si pudieras mejorar UN solo aspecto de tu experiencia en Primax, ¿cuál sería? (opcional)</div>
+                <textarea class="open-field" id="txt-mejora" placeholder="Tu sugerencia..."></textarea>
             </div>
         </div>
         <div class="cta-wrap">
@@ -596,6 +575,7 @@
         </div>
         <div class="cta-wrap">
             <button class="btn-back" onclick="go(9)">← Atrás</button>
+            <input type="hidden" id="pago_insatisfaccion_motivo" value="">
             <button class="btn-next" onclick="validarYEnviar()">Finalizar <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
         </div>
     </div>
@@ -605,7 +585,7 @@
             <div style="font-size:48px">🎉</div>
             <div class="ty-title">¡Gracias por<br>compartir tu<br><em style="font-style:normal;color:var(--orange)">opinión!</em></div>
             <div class="intro-divider"></div>
-            <div class="ty-sub">Ya estás participando en el sorteo. ¡Mucha suerte y hasta pronto en Primax!</div>
+            <div class="ty-sub">Tu opinión nos ayuda a mejorar cada día la experiencia Primax. Ya estás participando en el sorteo. ¡Mucha suerte y hasta pronto!</div>
         </div>
     </div>
 
@@ -635,12 +615,11 @@
 
     function goNext(from, to) {
         if (!validateStep(from)) {
-            return; // No avanza si la validación falla
+            return;
         }
         go(to);
     }
 
-    // Sistema de validación estricta por paso antes de avanzar
     function validateStep(screenNum) {
         if (screenNum === 1) {
             if (!answers['combustible'] || !answers['frecuencia'] || !answers['eleccion']) {
@@ -655,19 +634,20 @@
             }
         }
         if (screenNum === 3) {
-            if (!answers['ctr-saludo'] || !answers['ctr-confirmacion'] || !answers['ctr-marcador'] || !answers['ctr-uniforme'] || !answers['ctr-promocion-isla'] || !answers['atencion_playero']) {
-                alert('Por favor, complete toda la evaluación de atención en isla.');
-                return false;
-            }
-            // Si el combustible elegido es GLP (3) o GNV (4), el bloque de gas es obligatorio
-            if ((answers['combustible'] === 3 || answers['combustible'] === 4) && (!answers['es-gas-comodidad'] || !answers['es-gas-rapidez'])) {
-                alert('Por favor, califique los aspectos específicos del abastecimiento de gas.');
+            // Validación actualizada Fase 3: Escalas de valoración de listero/playero obligatorias
+            if (!answers['es-col-trato'] || !answers['es-col-saludo'] || !answers['es-col-imagen'] || !answers['es-col-seguridad'] || !answers['es-col-promo'] || !answers['es-col-disp'] || !answers['atencion_playero']) {
+                alert('Por favor, califique todos los aspectos de la atención en isla.');
                 return false;
             }
         }
         if (screenNum === 4) {
-            if (!answers['ws-pago'] || !answers['ctr-disponible-cobro'] || !answers['ctr-boleta'] || !answers['ctr-bonus-pago'] || !answers['ctr-despedida-p'] || !answers['yn-medios']) {
-                alert('Por favor, complete los detalles del proceso de pago.');
+            if (!answers['ws-pago']) {
+                alert('Por favor, evalúe la rapidez del proceso de pago.');
+                return false;
+            }
+            // Condicional estricto Fase 3: si es insatisfecho/neutral (1, 2, 3), la justificación es obligatoria
+            if ((answers['ws-pago'] === 1 || answers['ws-pago'] === 2 || answers['ws-pago'] === 3) && !document.getElementById('txt-pago-problema').value.trim()) {
+                alert('Por favor, coméntanos brevemente qué fue lo que ocurrió con el proceso de pago.');
                 return false;
             }
         }
@@ -715,11 +695,6 @@
                 alert('Por favor, elija al menos un tipo de promoción que valoraría más.');
                 return false;
             }
-            const countAtributos = document.querySelectorAll('#chk-atributos .checkbox-item.selected').length;
-            if (countAtributos !== 5) {
-                alert('Por favor, seleccione exactamente 5 aspectos de la lista de lo que más valora.');
-                return false;
-            }
         }
         if (screenNum === 8) {
             if (answers['nps-main'] === undefined || !answers['es-csat'] || !answers['ws-ces']) {
@@ -730,20 +705,12 @@
         return true;
     }
 
-    updateProgress();
-
-    // Select single choice
     function selectSingle(key, btn, val, listId) {
         document.querySelectorAll('#'+listId+' .choice-item').forEach(b => b.classList.remove('selected'));
         btn.classList.add('selected');
         answers[key] = val;
-        // Special cases
-        if (key === 'combustible') {
-            document.getElementById('gnv-block').style.display = (val===3||val===4) ? 'block' : 'none';
-        }
         if (key === 'eleccion') {
-            const condOtras = document.getElementById('cond-otras-marcas');
-            condOtras.classList.toggle('visible', val===3);
+            document.getElementById('cond-otras-marcas').classList.toggle('visible', val===3);
         }
     }
 
@@ -759,6 +726,21 @@
         answers[groupId] = val;
     }
 
+    // Manejo de la velocidad de pago y despliegue condicional de la P6a
+    function selectWordPago(groupId, btn, val) {
+        document.querySelectorAll('#'+groupId+' .word-btn').forEach(b => b.classList.remove('selected'));
+        btn.classList.add('selected');
+        answers[groupId] = val;
+
+        const condBlock = document.getElementById('cond-pago-problema');
+        if (val === 1 || val === 2 || val === 3) {
+            condBlock.classList.add('visible');
+        } else {
+            condBlock.classList.remove('visible');
+            document.getElementById('txt-pago-problema').value = "";
+        }
+    }
+
     function selectNPS(groupId, btn, val) {
         document.querySelectorAll('#'+groupId+' .nps-btn').forEach(b => b.classList.remove('selected'));
         btn.classList.add('selected');
@@ -769,22 +751,7 @@
         document.querySelectorAll('#'+groupId+' .yn-btn').forEach(b => b.classList.remove('selected'));
         btn.classList.add('selected');
         answers[groupId] = val;
-
-        if (groupId === 'yn-medios') {
-            // Para medios de pago, muestra el bloque solo si dice 'no'
-            document.getElementById(condId).classList.toggle('visible', val === 'no');
-        } else if (groupId === 'yn-promo') {
-            // Para promociones, muestra la pregunta P16 solo si dice 'si'
-            document.getElementById(condId).classList.toggle('visible', val === 'si');
-        }
-    }
-
-    function selectCtRow(rowId, val) {
-        const si = document.getElementById(rowId+'-si');
-        const no = document.getElementById(rowId+'-no');
-        si.className = 'ct-radio' + (val==='si' ? ' selected-si' : '');
-        no.className = 'ct-radio' + (val==='no' ? ' selected-no' : '');
-        answers[rowId] = val;
+        document.getElementById(condId).classList.toggle('visible', val === 'si');
     }
 
     function toggleCheck(btn, key) {
@@ -796,13 +763,10 @@
             checkboxAnswers['serv_ninguno'] = false;
         }
 
-        // Show/hide service blocks
         const usedBano = checkboxAnswers['serv_bano'];
         const usedAny = checkboxAnswers['serv_bano'] || checkboxAnswers['serv_aire'] || checkboxAnswers['serv_lavado'] || checkboxAnswers['serv_listo'];
-        const blockBano = document.getElementById('block-bano');
-        const blockServGral = document.getElementById('block-servicios-gral');
-        if (blockBano) blockBano.style.display = usedBano ? 'block' : 'none';
-        if (blockServGral) blockServGral.style.display = usedAny ? 'block' : 'none';
+        document.getElementById('block-bano').style.display = usedBano ? 'block' : 'none';
+        document.getElementById('block-servicios-gral').style.display = usedAny ? 'block' : 'none';
     }
 
     function toggleNinguno(btn, listId, key) {
@@ -812,10 +776,8 @@
             btn.classList.add('selected');
             Object.keys(checkboxAnswers).forEach(k => { if(k.startsWith('serv_')) checkboxAnswers[k] = false; });
             checkboxAnswers[key] = true;
-            const blockBano = document.getElementById('block-bano');
-            const blockServGral = document.getElementById('block-servicios-gral');
-            if (blockBano) blockBano.style.display = 'none';
-            if (blockServGral) blockServGral.style.display = 'none';
+            document.getElementById('block-bano').style.display = 'none';
+            document.getElementById('block-servicios-gral').style.display = 'none';
         } else {
             btn.classList.remove('selected');
             checkboxAnswers[key] = false;
@@ -859,21 +821,19 @@
             otras_marcas: document.getElementById('txt-otras-marcas')?.value?.trim()||'',
             facilidad_llegada: answers['ws-facilidad']||'',
             isla_disponible: answers['isla']||'',
-            p3_saludo: answers['ctr-saludo']||'',
-            p3_confirmacion: answers['ctr-confirmacion']||'',
-            p3_marcador: answers['ctr-marcador']||'',
-            p3_uniforme: answers['ctr-uniforme']||'',
-            p3_promocion: answers['ctr-promocion-isla']||'',
+
+            // Atributos de listero/playero unificados en Fase 3
+            col_trato: answers['es-col-trato']||'',
+            col_saludo: answers['es-col-saludo']||'',
+            col_imagen: answers['es-col-imagen']||'',
+            col_seguridad_gas: answers['es-col-seguridad']||'',
+            col_ofrecimiento_promo: answers['es-col-promo']||'',
+            col_presencia_disponible: answers['es-col-disp']||'',
+
             atencion_playero: answers['atencion_playero']||'',
-            gas_comodidad: answers['es-gas-comodidad']||'',
-            gas_rapidez: answers['es-gas-rapidez']||'',
             pago_rapido: answers['ws-pago']||'',
-            p7_cobro_disp: answers['ctr-disponible-cobro']||'',
-            p7_boleta: answers['ctr-boleta']||'',
-            p7_bonus_pago: answers['ctr-bonus-pago']||'',
-            p7_despedida: answers['ctr-despedida-p']||'',
-            medios_pago_ok: answers['yn-medios']||'',
-            medio_pago_faltante: document.getElementById('txt-medio-pago')?.value?.trim()||'',
+            pago_problema_descripcion: document.getElementById('txt-pago-problema')?.value?.trim()||'',
+
             serv_bano: checkboxAnswers['serv_bano']?'Sí':'',
             serv_aire: checkboxAnswers['serv_aire']?'Sí':'',
             serv_lavado: checkboxAnswers['serv_lavado']?'Sí':'',
@@ -889,6 +849,14 @@
             bonus_lealtad: answers['ws-bonus']||'',
             promo_ofrecida: answers['yn-promo']||'',
             promo_atractiva: answers['ws-promo']||'',
+
+            promo_pref_agua: checkboxAnswers['serv_agua']?'Sí':'',
+            promo_pref_energizante: checkboxAnswers['serv_energizante']?'Sí':'',
+            promo_pref_snack: checkboxAnswers['serv_snack']?'Sí':'',
+            promo_pref_combo: checkboxAnswers['serv_combo']?'Sí':'',
+            promo_pref_puntos: checkboxAnswers['serv_puntos']?'Sí':'',
+            promo_pref_listo: checkboxAnswers['serv_listo_prod']?'Sí':'',
+
             nps: answers['nps-main']!==undefined ? answers['nps-main'] : '',
             nps_motivo: document.getElementById('txt-nps')?.value?.trim()||'',
             csat: answers['es-csat']||'',
@@ -904,15 +872,12 @@
         go(11);
     }
 
-    // Función para actualizar la barra de progreso y las etiquetas del menú superior
     function updateProgress() {
         const fill = document.getElementById('progress-fill');
         const label = document.getElementById('step-label');
         if (fill && label) {
-            // Calcula el porcentaje basado en la pantalla actual
             const pct = (currentScreen / TOTAL_STEPS) * 100;
             fill.style.width = pct + '%';
-            // Cambia el texto del paso usando tu objeto LABELS
             label.textContent = LABELS[currentScreen] || 'Encuesta';
         }
     }
