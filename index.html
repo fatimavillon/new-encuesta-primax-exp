@@ -849,7 +849,7 @@
 
     function buildPayload() {
         return {
-            timestamp: new Date().toLocaleString("es-PE", {timeZone: "America/Lima"}), // Captura fecha y hora exacta de Perú
+            timestamp: new Date().toLocaleString("es-PE", {timeZone: "America/Lima"}),
             fuente: 'primax_estacion',
             dni: document.getElementById('dni').value.trim(),
             celular: document.getElementById('celular').value.trim(),
